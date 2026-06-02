@@ -135,4 +135,28 @@ public async Task<bool> UpdateEmployeeAsync(
 
     return rowsAffected > 0;
 }
+
+public async Task<bool> DeleteEmployeeAsync(
+        int id)
+{
+        using var connection =
+            new SqlConnection(_connectionString);
+
+        await connection.OpenAsync();
+
+        var command = new SqlCommand(
+            @"
+            DELETE FROM Employees
+            WHERE Id = @Id",
+            connection);
+
+        command.Parameters.AddWithValue(
+            "@Id",
+            id);
+
+        var rowsAffected =
+            await command.ExecuteNonQueryAsync();
+
+        return rowsAffected > 0;
+    }
 }
