@@ -1,0 +1,15 @@
+*{
+    box-sizing: border-box;
+    font-family: trebuchet ms, sans-serif
+
+}
+h1{
+    text-align: center;
+    margin: 20px 0;
+    color: #00fc60a6;
+}
+span{
+    display: block;
+    text-align: center;
+    margin: 50px 0;
+}

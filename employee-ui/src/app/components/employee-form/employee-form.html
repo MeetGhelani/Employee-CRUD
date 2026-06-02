@@ -1,0 +1,32 @@
+<h2>Add Employee</h2>
+
+<div class="employee-form">
+  <label for="name">Name:</label>
+  <input
+    type="text"
+    placeholder="Name"
+    [(ngModel)]="name"
+  />
+
+  <label for="email">Email:</label>
+  <input
+    type="email"
+    placeholder="Email ID."
+    [(ngModel)]="email"
+  />
+
+  <label for="department">Department:</label>
+  <input
+    type="text"
+    placeholder="Department_Name"
+    [(ngModel)]="department"
+  />
+
+
+<br>
+
+<button (click)="addEmployee()">
+  Add Employee
+</button>
+
+</div>
