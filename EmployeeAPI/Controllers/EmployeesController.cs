@@ -1,5 +1,8 @@
+using EmployeeAPI.DTOs;
 using EmployeeAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using EmployeeAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeAPI.Controllers;
 
@@ -7,41 +10,56 @@ namespace EmployeeAPI.Controllers;
 [Route("api/[controller]")]
 public class EmployeesController : ControllerBase
 {
-    private static readonly List<Employee> Employees =
-    [
-        new Employee
-        {
-            Id = 1,
-            Name = "Rahul",
-            Email = "rahul@gmail.com",
-            Department = "IT"
-        },
-        new Employee
-        {
-            Id = 2,
-            Name = "Priya",
-            Email = "priya@gmail.com",
-            Department = "HR"
-        }
-    ];
+   private readonly AppDbContext _context;
+
+    public EmployeesController(AppDbContext context)
+{
+    _context = context;
+}
 
     [HttpGet]
-    public ActionResult<IEnumerable<Employee>> GetEmployees()
+    public async Task<ActionResult<IEnumerable<EmployeeDto>>>
+    GetEmployees()
     {
-        return Ok(Employees);
-    }
+        var employees = await _context
+            .Employees
+            .Select(e => new EmployeeDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Email = e.Email,
+                Department = e.Department
+            })
+            .ToListAsync();
+
+        return Ok(employees);
+}
 
     [HttpPost]
-    public ActionResult<Employee> CreateEmployee(
-        Employee employee)
+public async Task<ActionResult<EmployeeDto>>
+CreateEmployee(CreateEmployeeDto dto)
+{
+    var employee = new Employee
     {
-        employee.Id =
-            Employees.Max(e => e.Id) + 1;
+        Name = dto.Name,
+        Email = dto.Email,
+        Department = dto.Department
+    };
 
-        Employees.Add(employee);
+    _context.Employees.Add(employee);
 
-        return CreatedAtAction(
-            nameof(GetEmployees),
-            employee);
-    }
+    await _context.SaveChangesAsync();
+
+    var result = new EmployeeDto
+    {
+        Id = employee.Id,
+        Name = employee.Name,
+        Email = employee.Email,
+        Department = employee.Department
+    };
+
+    return CreatedAtAction(
+        nameof(GetEmployees),
+        result);
+}
 }
