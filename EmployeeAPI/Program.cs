@@ -1,10 +1,12 @@
 using EmployeeAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using EmployeeAPI.Repositories;
+using EmployeeAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<EmployeeRepository>();
+builder.Services.AddScoped<EmployeeService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(

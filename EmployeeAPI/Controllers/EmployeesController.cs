@@ -2,6 +2,7 @@ using EmployeeAPI.DTOs;
 using EmployeeAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using EmployeeAPI.Repositories;
+using EmployeeAPI.Services;
 
 namespace EmployeeAPI.Controllers;
 
@@ -9,21 +10,19 @@ namespace EmployeeAPI.Controllers;
 [Route("api/[controller]")]
 public class EmployeesController : ControllerBase
 {
-    private readonly EmployeeRepository _repository;
-
-    public EmployeesController(
-        EmployeeRepository repository)
-    {
-        _repository = repository;
-    }
+    private readonly EmployeeService _service;
+   public EmployeesController(
+    EmployeeService service)
+{
+    _service = service;
+}
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EmployeeDto>>>
     GetEmployees()
     {
         var employees =
-            await _repository.GetEmployeesAsync();
-
+        await _service.GetEmployeesAsync();
         var result =
             employees.Select(e => new EmployeeDto
             {
@@ -48,8 +47,7 @@ public class EmployeesController : ControllerBase
         };
 
         var createdEmployee =
-            await _repository.CreateEmployeeAsync(
-                employee);
+        await _service.CreateEmployeeAsync(employee);       
 
         var result = new EmployeeDto
         {
@@ -78,7 +76,7 @@ public class EmployeesController : ControllerBase
         };
 
         var updated =
-            await _repository.UpdateEmployeeAsync(
+            await _service.UpdateEmployeeAsync(
                 id,
                 employee);
 
@@ -95,7 +93,7 @@ public class EmployeesController : ControllerBase
     DeleteEmployee(int id)
     {
         var deleted =
-            await _repository.DeleteEmployeeAsync(id);
+            await _service.DeleteEmployeeAsync(id);
 
         if (!deleted)
         {
