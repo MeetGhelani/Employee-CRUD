@@ -94,4 +94,45 @@ public class EmployeeRepository
 
         return employee;
 }
+
+public async Task<bool> UpdateEmployeeAsync(
+    int id,
+    Employee employee)
+{
+    using var connection =
+        new SqlConnection(_connectionString);
+
+    await connection.OpenAsync();
+
+    var command = new SqlCommand(
+        @"
+        UPDATE Employees
+        SET
+            Name = @Name,
+            Email = @Email,
+            Department = @Department
+        WHERE Id = @Id",
+        connection);
+
+    command.Parameters.AddWithValue(
+        "@Id",
+        id);
+
+    command.Parameters.AddWithValue(
+        "@Name",
+        employee.Name);
+
+    command.Parameters.AddWithValue(
+        "@Email",
+        employee.Email);
+
+    command.Parameters.AddWithValue(
+        "@Department",
+        employee.Department);
+
+    var rowsAffected =
+        await command.ExecuteNonQueryAsync();
+
+    return rowsAffected > 0;
+}
 }

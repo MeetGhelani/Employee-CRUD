@@ -63,4 +63,30 @@ public class EmployeesController : ControllerBase
             nameof(GetEmployees),
             result);
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult>
+    UpdateEmployee(
+        int id,
+        UpdateEmployeeDto dto)
+    {
+        var employee = new Employee
+        {
+            Name = dto.Name,
+            Email = dto.Email,
+            Department = dto.Department
+        };
+
+        var updated =
+            await _repository.UpdateEmployeeAsync(
+                id,
+                employee);
+
+        if (!updated)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
 }
