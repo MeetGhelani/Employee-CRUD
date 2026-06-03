@@ -1,36 +1,45 @@
 <h2>Add Employee</h2>
 
 <div class="employee-form">
-<form #employeeForm="ngForm" (ngSubmit)="addEmployee(employeeForm)">
+  <form #employeeForm="ngForm" (ngSubmit)="saveEmployee(employeeForm)">
 
-  <label>Name:</label>
-  <input
-    type="text"
-    name="name"
-    [(ngModel)]="name"
-    required
-  />
+    <label>Name:</label>
+    <input
+      type="text"
+      name="name"
+      [(ngModel)]="name"
+      required
+    />
 
-  <label>Email:</label>
-  <input
-    type="email"
-    name="email"
-    [(ngModel)]="email"
-    required
-  />
+    <label>Email:</label>
+    <input
+      type="email"
+      name="email"
+      [(ngModel)]="email"
+      required
+    />
 
-  <label>Department:</label>
-  <input
-    type="text"
-    name="department"
-    [(ngModel)]="department"
-    required
-  />
+    <label>Department:</label>
+    <input
+      type="text"
+      name="department"
+      [(ngModel)]="department"
+      required
+    />
 
-  <button type="submit">
-    Add Employee
-  </button>
+    <button type="submit">
 
-</form>
+      @if (editingEmployeeId !== null) {
+
+        Update Employee
+
+      } @else {
+
+        Add Employee
+
+      }
+    </button>
+
+  </form>
 
 </div>

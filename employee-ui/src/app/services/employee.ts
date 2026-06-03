@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
@@ -14,6 +14,9 @@ export class EmployeeService {
 
   private apiUrl =
     `${environment.apiUrl}/employees`;
+
+    selectedEmployee =
+    signal<Employee | null>(null);
 
     private employeeUpdatedSource = new Subject<void>();
 
@@ -37,23 +40,38 @@ export class EmployeeService {
   }
 
   addEmployee(employee: {
-  name: string;
-  email: string;
-  department: string;
-}) {
+    name: string;
+    email: string;
+    department: string;
+  }) {
 
-  return this.http.post(
-    this.apiUrl,
-    employee
-  );
-
+    return this.http.post(
+      this.apiUrl,
+      employee
+    );
 }
 
   deleteEmployee(id: number) {
 
-  return this.http.delete(
-    `${this.apiUrl}/${id}`
-  );
+    return this.http.delete(
+      `${this.apiUrl}/${id}`
+    );
 
-}
+  }
+
+  updateEmployee(
+  id: number,
+  employee: {
+    name: string;
+    email: string;
+    department: string;
+  }
+  ) {
+
+    return this.http.put(
+      `${this.apiUrl}/${id}`,
+      employee
+    );
+
+  }
 }

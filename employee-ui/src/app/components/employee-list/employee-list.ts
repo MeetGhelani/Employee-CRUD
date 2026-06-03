@@ -49,6 +49,16 @@ loadEmployees() {
 
   }
 
+  editEmployee(
+      employee: Employee
+    ) {
+
+      this.employeeService
+        .selectedEmployee
+        .set(employee);
+
+  }
+
   deleteEmployee(id: number) {
 
     const confirmed = confirm(

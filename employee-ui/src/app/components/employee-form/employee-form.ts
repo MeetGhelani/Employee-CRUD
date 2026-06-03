@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component , effect} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { EmployeeService } from '../../services/employee';
@@ -15,25 +15,85 @@ export class EmployeeForm {
   email = '';
   department = '';
 
+  editingEmployeeId:
+  number | null = null;
+
   constructor(
-    private employeeService: EmployeeService
-  ) {}
+  private employeeService: EmployeeService
+  ) {
 
-  addEmployee(form: NgForm) {
+  effect(() => {
 
-  this.employeeService
-    .addEmployee({
+    const employee =
+      this.employeeService
+      .selectedEmployee();
+
+    if (employee) {
+
+      this.editingEmployeeId =
+        employee.id;
+
+      this.name =
+        employee.name;
+
+      this.email =
+        employee.email;
+
+      this.department =
+        employee.department;
+
+    }
+
+  });
+
+}
+
+  saveEmployee(form: NgForm) {
+
+    const employeeData = {
+
       name: this.name,
       email: this.email,
       department: this.department
-    })
-    .subscribe(() => {
 
-      form.resetForm();
+    };
 
-      this.employeeService.notifyEmployeeUpdated();
+    if (this.editingEmployeeId !== null) {
 
-    });
+      this.employeeService
+        .updateEmployee(
+          this.editingEmployeeId,
+          employeeData
+        )
+        .subscribe(() => {
 
-}
+          this.editingEmployeeId = null;
+
+          this.employeeService
+            .selectedEmployee
+            .set(null);
+
+          form.resetForm();
+
+          this.employeeService
+            .notifyEmployeeUpdated();
+
+        });
+
+    }
+    else {
+
+      this.employeeService
+        .addEmployee(employeeData)
+        .subscribe(() => {
+
+          form.resetForm();
+
+          this.employeeService
+            .notifyEmployeeUpdated();
+
+        });
+
+    }
+  }
 }
