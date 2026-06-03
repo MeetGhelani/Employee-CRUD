@@ -19,15 +19,31 @@ export class EmployeeList implements OnInit {
     private employeeService: EmployeeService
   ) {}
 
+loadEmployees() {
+
+  this.loading.set(true);
+
+  this.employeeService
+    .getEmployees()
+    .subscribe(data => {
+
+      this.employees.set(data);
+
+      this.loading.set(false);
+
+    });
+
+}
+  
   ngOnInit(): void {
 
+    this.loadEmployees();
+    
     this.employeeService
-      .getEmployees()
+      .employeeUpdated$
       .subscribe(data => {
 
-        this.employees.set(data);
-
-        this.loading.set(false);
+        this.loadEmployees();
 
       });
 

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
+import { NgForm } from '@angular/forms';
 import { EmployeeService } from '../../services/employee';
 
 @Component({
@@ -19,23 +19,21 @@ export class EmployeeForm {
     private employeeService: EmployeeService
   ) {}
 
-  addEmployee() {
+  addEmployee(form: NgForm) {
 
-    this.employeeService
-      .addEmployee({
-        name: this.name,
-        email: this.email,
-        department: this.department
-      })
-      .subscribe(() => {
+  this.employeeService
+    .addEmployee({
+      name: this.name,
+      email: this.email,
+      department: this.department
+    })
+    .subscribe(() => {
 
-        this.name = '';
-        this.email = '';
-        this.department = '';
+      form.resetForm();
 
-        window.location.reload();
+      this.employeeService.notifyEmployeeUpdated();
 
-      });
+    });
 
-  }
+}
 }

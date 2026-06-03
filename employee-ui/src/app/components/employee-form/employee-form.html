@@ -1,32 +1,36 @@
 <h2>Add Employee</h2>
 
 <div class="employee-form">
-  <label for="name">Name:</label>
+<form #employeeForm="ngForm" (ngSubmit)="addEmployee(employeeForm)">
+
+  <label>Name:</label>
   <input
     type="text"
-    placeholder="Name"
+    name="name"
     [(ngModel)]="name"
+    required
   />
 
-  <label for="email">Email:</label>
+  <label>Email:</label>
   <input
     type="email"
-    placeholder="Email ID."
+    name="email"
     [(ngModel)]="email"
+    required
   />
 
-  <label for="department">Department:</label>
+  <label>Department:</label>
   <input
     type="text"
-    placeholder="Department_Name"
+    name="department"
     [(ngModel)]="department"
+    required
   />
 
+  <button type="submit">
+    Add Employee
+  </button>
 
-<br>
-
-<button (click)="addEmployee()">
-  Add Employee
-</button>
+</form>
 
 </div>
