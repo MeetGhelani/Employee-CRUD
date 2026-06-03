@@ -4,16 +4,27 @@ namespace EmployeeAPI.DTOs;
 
 public class CreateEmployeeDto
 {
+    
     [Required]
-    [StringLength(100)]
+    [StringLength(100, MinimumLength = 2)]
+    [RegularExpression(
+    @"^[A-Za-z]+(?:\s[A-Za-z]+)*$",
+    ErrorMessage =
+    "Name can contain only letters and spaces.")]
     public string Name { get; set; } = string.Empty;
 
     [Required]
-    [EmailAddress]
+    [RegularExpression(
+        @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$",
+        ErrorMessage = "Invalid email format.")]
     [StringLength(150)]
     public string Email { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(100)]
+    [StringLength(100, MinimumLength = 2)]
+    [RegularExpression(
+    @"^[A-Za-z\s]+$",
+    ErrorMessage =
+    "Department can contain only letters and spaces.")]
     public string Department { get; set; } = string.Empty;
 }

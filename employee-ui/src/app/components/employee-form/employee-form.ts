@@ -1,7 +1,9 @@
-import { Component , effect} from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
 import { EmployeeService } from '../../services/employee';
+import { ToastService } from '../../services/toast';
 
 @Component({
   selector: 'app-employee-form',
@@ -16,39 +18,58 @@ export class EmployeeForm {
   department = '';
 
   editingEmployeeId:
-  number | null = null;
+    number | null = null;
+
+  duplicateEmailError = '';
+  
 
   constructor(
-  private employeeService: EmployeeService
+    private employeeService: EmployeeService,
+    private cdr: ChangeDetectorRef,
+    private toastService: ToastService
+
   ) {
 
-  effect(() => {
+    effect(() => {
 
-    const employee =
-      this.employeeService
-      .selectedEmployee();
+      const employee =
+        this.employeeService
+          .selectedEmployee();
 
-    if (employee) {
+      if (employee) {
 
-      this.editingEmployeeId =
-        employee.id;
+        this.editingEmployeeId =
+          employee.id;
 
-      this.name =
-        employee.name;
+        this.name =
+          employee.name;
 
-      this.email =
-        employee.email;
+        this.email =
+          employee.email;
 
-      this.department =
-        employee.department;
+        this.department =
+          employee.department;
 
-    }
+      }
+      else {
 
-  });
+        this.editingEmployeeId = null;
 
-}
+        this.name = '';
+
+        this.email = '';
+
+        this.department = '';
+
+      }
+
+    });
+
+  }
 
   saveEmployee(form: NgForm) {
+
+    this.duplicateEmailError = '';
 
     const employeeData = {
 
@@ -65,18 +86,47 @@ export class EmployeeForm {
           this.editingEmployeeId,
           employeeData
         )
-        .subscribe(() => {
+        .subscribe({
 
-          this.editingEmployeeId = null;
+          next: () => {
 
-          this.employeeService
-            .selectedEmployee
-            .set(null);
+            this.duplicateEmailError = '';
 
-          form.resetForm();
+            this.editingEmployeeId = null;
 
-          this.employeeService
-            .notifyEmployeeUpdated();
+            this.employeeService
+              .selectedEmployee
+              .set(null);
+
+            form.resetForm();
+
+            this.employeeService
+              .notifyEmployeeUpdated();
+
+            this.toastService.show(
+              '✓ Employee updated successfully',
+              'success'
+            );
+
+          },
+
+         error: (error) => {
+
+            if (error.status === 409) {
+
+              this.duplicateEmailError =
+                'Email already exists';
+
+              this.toastService.show(
+                '❌ Email already exists',
+                'error'
+              );
+
+              this.cdr.detectChanges();
+
+            }
+
+          }
 
         });
 
@@ -85,15 +135,60 @@ export class EmployeeForm {
 
       this.employeeService
         .addEmployee(employeeData)
-        .subscribe(() => {
+        .subscribe({
 
-          form.resetForm();
+          next: () => {
 
-          this.employeeService
-            .notifyEmployeeUpdated();
+            this.duplicateEmailError = '';
+
+            form.resetForm();
+
+            this.employeeService
+              .notifyEmployeeUpdated();
+
+            this.toastService.show(
+              '✓ Employee added successfully',
+              'success'
+            );
+
+          },
+
+          error: (error) => {
+
+            if (error.status === 409) {
+
+              this.duplicateEmailError =
+                'Email already exists';
+
+              this.toastService.show(
+                '❌ Email already exists',
+                'error'
+              );
+
+            }
+
+          }
 
         });
 
     }
+
   }
+
+  clearForm() {
+
+    this.editingEmployeeId = null;
+
+    this.name = '';
+
+    this.email = '';
+
+    this.department = '';
+
+    this.employeeService
+      .selectedEmployee
+      .set(null);
+
+  }
+
 }

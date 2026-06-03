@@ -14,9 +14,16 @@ public class EmployeeService
     }
 
     public async Task<List<Employee>>
-    GetEmployeesAsync()
+    GetEmployeesAsync(
+        string? search,
+        string? sortBy,
+        string? sortOrder)
     {
-        return await _repository.GetEmployeesAsync();
+        return await _repository
+            .GetEmployeesAsync(
+                search,
+                sortBy,
+                sortOrder);
     }
 
     public async Task<Employee>
@@ -42,5 +49,23 @@ public class EmployeeService
     {
         return await _repository
             .DeleteEmployeeAsync(id);
+    }
+
+    public async Task<bool>
+    EmailExistsAsync(string email)
+    {
+        return await _repository
+            .EmailExistsAsync(email);
+    }
+
+    public async Task<bool>
+    EmailExistsForOtherEmployeeAsync(
+        int id,
+        string email)
+    {
+        return await _repository
+            .EmailExistsForOtherEmployeeAsync(
+                id,
+                email);
     }
 }

@@ -19,10 +19,15 @@ public class EmployeesController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EmployeeDto>>>
-    GetEmployees()
-    {
+
+    
+    GetEmployees(
+        [FromQuery] string? search,
+        [FromQuery] string? sortBy,
+        [FromQuery] string? sortOrder)    {
+
         var employees =
-        await _service.GetEmployeesAsync();
+        await _service.GetEmployeesAsync(search, sortBy, sortOrder);
         var result =
             employees.Select(e => new EmployeeDto
             {
@@ -39,6 +44,19 @@ public class EmployeesController : ControllerBase
     public async Task<ActionResult<EmployeeDto>>
     CreateEmployee(CreateEmployeeDto dto)
     {
+
+        var emailExists =
+            await _service.EmailExistsAsync(
+                dto.Email);
+
+        if (emailExists)
+        {
+            return Conflict(new
+            {
+                message =
+                    "Email already exists."
+            });
+        }
         var employee = new Employee
         {
             Name = dto.Name,
@@ -68,6 +86,21 @@ public class EmployeesController : ControllerBase
         int id,
         UpdateEmployeeDto dto)
     {
+        var emailExists =
+            await _service
+                .EmailExistsForOtherEmployeeAsync(
+                    id,
+                    dto.Email);
+
+        if (emailExists)
+        {
+            return Conflict(new
+            {
+                message =
+                    "Email already exists."
+            });
+        }
+
         var employee = new Employee
         {
             Name = dto.Name,

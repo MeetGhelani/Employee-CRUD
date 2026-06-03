@@ -15,23 +15,55 @@ public class EmployeeRepository
                 "Connection string not found.");
     }
 
-    public async Task<List<Employee>> GetEmployeesAsync()
+    public async Task<List<Employee>> GetEmployeesAsync( string? search, string? sortBy, string? sortOrder)
     {
         var employees = new List<Employee>();
+
+        var orderByClause =
+            sortBy?.ToLower() switch
+            {
+                "name" => "Name",
+                "email" => "Email",
+                "department" => "Department",
+                _ => "Id"
+            };
+
+        var direction =
+            sortOrder?.ToLower() == "desc"
+                ? "DESC"
+                : "ASC";
 
         using var connection =
             new SqlConnection(_connectionString);
 
         await connection.OpenAsync();
 
-        var command = new SqlCommand(
-            @"SELECT
-                Id,
-                Name,
-                Email,
-                Department
-              FROM Employees",
-            connection);
+        var query = $@"
+        SELECT
+            Id,
+            Name,
+            Email,
+            Department
+        FROM Employees
+        WHERE
+            @Search IS NULL
+            OR Name LIKE '%' + @Search + '%'
+            OR Email LIKE '%' + @Search + '%'
+            OR Department LIKE '%' + @Search + '%'
+        ORDER BY
+            {orderByClause}
+            {direction}";
+
+        var command =
+            new SqlCommand(
+                query,
+                connection);
+
+        command.Parameters.AddWithValue(
+        "@Search",
+        string.IsNullOrWhiteSpace(search)
+            ? DBNull.Value
+            : search);
 
         using var reader =
             await command.ExecuteReaderAsync();
@@ -158,5 +190,62 @@ public async Task<bool> DeleteEmployeeAsync(
             await command.ExecuteNonQueryAsync();
 
         return rowsAffected > 0;
+    }
+
+   public async Task<bool>
+    EmailExistsAsync(string email)
+    {
+        using var connection =
+            new SqlConnection(_connectionString);
+
+        await connection.OpenAsync();
+
+        var command = new SqlCommand(
+            @"
+            SELECT COUNT(*)
+            FROM Employees
+            WHERE Email = @Email",
+            connection);
+
+        command.Parameters.AddWithValue(
+            "@Email",
+            email);
+
+        var count =
+            (int)await command.ExecuteScalarAsync();
+
+        return count > 0;
+    }
+
+    public async Task<bool>
+    EmailExistsForOtherEmployeeAsync(
+        int id,
+        string email)
+    {
+        using var connection =
+            new SqlConnection(_connectionString);
+
+        await connection.OpenAsync();
+
+        var command = new SqlCommand(
+            @"
+            SELECT COUNT(*)
+            FROM Employees
+            WHERE Email = @Email
+            AND Id <> @Id",
+            connection);
+
+        command.Parameters.AddWithValue(
+            "@Email",
+            email);
+
+        command.Parameters.AddWithValue(
+            "@Id",
+            id);
+
+        var count =
+            (int)await command.ExecuteScalarAsync();
+
+        return count > 0;
     }
 }

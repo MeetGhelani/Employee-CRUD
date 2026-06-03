@@ -1,18 +1,58 @@
 <div class="employee-list-container">
 
   <div class="list-header">
-    <h2>Employee Directory</h2>
 
-    <span class="employee-count">
-      Total Employees:
-      {{ employees().length }}
+    <span class="ctitle">
+      Employee Directory
     </span>
+
+    <div class="search-container">
+
+      <div class="search-wrapper">
+
+        <input
+          type="text"
+          placeholder="🔍 Search by name, email or department"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+        />
+
+        @if (searchTerm.length > 0) {
+
+          <button
+            class="clear-search-btn"
+            (click)="clearSearch()"
+            type="button">
+
+            ×
+
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+    <div class="header-actions">
+
+      <span class="employee-count">
+
+        Total Employees:
+        {{ employees().length }}
+
+      </span>
+
+    </div>
+
   </div>
 
   @if (loading()) {
 
     <div class="loading">
+
       Loading employees...
+
     </div>
 
   } @else {
@@ -22,59 +62,209 @@
       <table class="employee-table">
 
         <thead>
+
           <tr>
+
             <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Department</th>
+
+            <th
+              class="sortable"
+              (click)="toggleSort('name')">
+
+              Name
+
+              @if (sortBy === 'name') {
+
+                {{ sortOrder === 'asc' ? '↑' : '↓' }}
+
+              }
+
+            </th>
+
+            <th
+              class="sortable"
+              (click)="toggleSort('email')">
+
+              Email
+
+              @if (sortBy === 'email') {
+
+                {{ sortOrder === 'asc' ? '↑' : '↓' }}
+
+              }
+
+            </th>
+
+            <th
+              class="sortable"
+              (click)="toggleSort('department')">
+
+              Department
+
+              @if (sortBy === 'department') {
+
+                {{ sortOrder === 'asc' ? '↑' : '↓' }}
+
+              }
+
+            </th>
+
             <th>Actions</th>
+
           </tr>
+
         </thead>
 
         <tbody>
 
-          @for (
-            employee of employees();
-            track employee.id
-          ) {
+          @if (employees().length === 0) {
 
             <tr>
 
-              <td>{{ employee.id }}</td>
+              <td
+                colspan="5"
+                class="empty-state">
 
-              <td>{{ employee.name }}</td>
+                <div class="empty-state-content">
 
-              <td>{{ employee.email }}</td>
+                  <div class="empty-icon">
 
-              <td>
-                <span class="department-badge">
-                  {{ employee.department }}
-                </span>
-              </td>
+                    📭
 
-              <td class="action-buttons">
+                  </div>
 
-                <button
-                  class="edit-btn"
-                  (click)="editEmployee(employee)">
-                  Edit
-                </button>
+                  <div class="empty-title">
 
-                <button
-                  class="delete-btn"
-                  (click)="deleteEmployee(employee.id)">
-                  Delete
-                </button>
+                    No employees found
+
+                  </div>
+
+                  <div class="empty-description">
+
+                    Try adjusting your search criteria.
+
+                  </div>
+
+                </div>
 
               </td>
 
             </tr>
+
+          } @else {
+
+            @for (
+              employee of employees();
+              track employee.id
+            ) {
+
+              <tr>
+
+                <td>
+                  {{ employee.id }}
+                </td>
+
+                <td
+                  [title]="employee.name">
+
+                  {{ employee.name }}
+
+                </td>
+
+                <td
+                  [title]="employee.email">
+
+                  {{ employee.email }}
+
+                </td>
+
+                <td
+                  [title]="employee.department">
+
+                  <span class="department-badge">
+
+                    {{ employee.department }}
+
+                  </span>
+
+                </td>
+
+                <td class="action-buttons">
+
+                  <button
+                    class="edit-btn"
+                    (click)="editEmployee(employee)">
+
+                    Edit
+
+                  </button>
+
+                  <button
+                    class="delete-btn"
+                    (click)="openDeleteModal(employee.id)">
+
+                    Delete
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
 
           }
 
         </tbody>
 
       </table>
+
     </div>
+
   }
+
+  @if (showDeleteModal) {
+
+    <div class="modal-overlay"
+    (click)="cancelDelete()">
+
+      <div class="modal"
+       (click)="$event.stopPropagation()">
+
+        <h3>
+          Delete Employee
+        </h3>
+
+        <p>
+
+          Are you sure you want to delete this employee?
+
+        </p>
+
+        <div class="modal-actions">
+
+          <button
+            class="cancel-btn"
+            (click)="cancelDelete()">
+
+            Cancel
+
+          </button>
+
+          <button
+            class="delete-btn"
+            (click)="confirmDelete()">
+
+            Delete
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
 </div>

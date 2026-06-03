@@ -10,8 +10,10 @@
       <input
         type="text"
         name="name"
+        maxlength="100"
         placeholder="Enter employee name"
         [(ngModel)]="name"
+        pattern="^[a-zA-Z\s]+$"
         required
         minlength="2"
         #nameField="ngModel"
@@ -37,6 +39,11 @@
             ) {
               Name must be at least 2 characters
             }
+            @if (
+              nameField.errors?.['maxlength']
+            ) {
+              Name cannot exceed 100 characters
+            }
 
           </div>
 
@@ -53,8 +60,10 @@
       <input
         type="email"
         name="email"
+        maxlength="150"
         placeholder="Enter employee email ID"
         [(ngModel)]="email"
+        (ngModelChange)="duplicateEmailError=''"
         required
         email
         #emailField="ngModel"
@@ -81,6 +90,22 @@
               Enter a valid email address
             }
 
+            @if (
+              emailField.errors?.['maxlength']
+            ) {
+              Email cannot exceed 150 characters
+            }
+
+          </div>
+
+        }
+
+        @if (duplicateEmailError) {
+
+          <div class="error">
+
+            {{ duplicateEmailError }}
+
           </div>
 
         }
@@ -96,8 +121,10 @@
       <input
         type="text"
         name="department"
+        maxlength="100"
         placeholder="Enter employee department"
         [(ngModel)]="department"
+        pattern="^[a-zA-Z\s]+$"
         required
         minlength="2"
         #departmentField="ngModel"
@@ -122,6 +149,12 @@
               departmentField.errors?.['minlength']
             ) {
               Department must be at least 2 characters
+            }
+
+            @if (
+              departmentField.errors?.['maxlength']
+            ) {
+              Department cannot exceed 100 characters
             }
 
           </div>

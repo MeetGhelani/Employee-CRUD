@@ -1,11 +1,12 @@
 import { Component, OnInit, signal } from '@angular/core';
-
+import { FormsModule } from '@angular/forms';
 import { Employee } from '../../models/employee';
 import { EmployeeService } from '../../services/employee';
+import { ToastService } from '../../services/toast';
 
 @Component({
   selector: 'app-employee-list',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.css'
 })
@@ -15,21 +16,57 @@ export class EmployeeList implements OnInit {
 
   employees = signal<Employee[]>([]);
 
-  constructor(
-    private employeeService: EmployeeService
-  ) {}
+    searchTerm = '';
+    sortBy = '';
+    sortOrder = '';
+    
+    showDeleteModal = false;
 
+    employeeToDeleteId:
+    number | null = null;
+    private noResultsToastShown = false
+
+  constructor(
+    private employeeService: EmployeeService,
+    private toastService: ToastService,
+    
+    
+  ) {}
 loadEmployees() {
 
   this.loading.set(true);
 
   this.employeeService
-    .getEmployees()
+    .getEmployees(
+      this.searchTerm,
+      this.sortBy,
+      this.sortOrder
+    )
     .subscribe(data => {
 
       this.employees.set(data);
 
       this.loading.set(false);
+
+      if (
+        data.length === 0 &&
+        this.searchTerm.trim() &&
+        !this.noResultsToastShown
+      ) {
+
+        this.noResultsToastShown = true;
+
+        this.toastService.show(
+          '⚠ No employees found',
+          'warning'
+        );
+
+      }
+      else if (data.length > 0) {
+
+        this.noResultsToastShown = false;
+
+      }
 
     });
 
@@ -59,23 +96,123 @@ loadEmployees() {
 
   }
 
-  deleteEmployee(id: number) {
+  openDeleteModal(id: number) {
 
-    const confirmed = confirm(
-      'Are you sure you want to delete this employee?'
-    );
+  this.employeeToDeleteId = id;
 
-    if (!confirmed) {
+  this.showDeleteModal = true;
+
+}
+
+  confirmDelete() {
+
+    const selectedEmployee =
+    this.employeeService
+      .selectedEmployee();
+
+    if (!this.employeeToDeleteId) {
+
       return;
+
     }
 
     this.employeeService
-      .deleteEmployee(id)
+      .deleteEmployee(
+        this.employeeToDeleteId
+      )
       .subscribe(() => {
+
+
+        if (
+          selectedEmployee &&
+          selectedEmployee.id ===
+            this.employeeToDeleteId
+        ) {
+
+          this.employeeService
+            .selectedEmployee
+            .set(null);
+
+        }
+
+        this.showDeleteModal = false;
+
+        this.employeeToDeleteId = null;
 
         this.loadEmployees();
 
+        this.toastService.show(
+          '✓ Employee deleted successfully',
+          'success'
+        );
+
       });
+
+  }
+
+  cancelDelete() {
+
+    this.showDeleteModal = false;
+
+    this.employeeToDeleteId = null;
+
+  }
+
+  private searchTimeout: any;
+
+  onSearch() {
+
+    clearTimeout(
+      this.searchTimeout
+    );
+
+    this.searchTimeout =
+      setTimeout(() => {
+
+        this.loadEmployees();
+
+      }, 300);
+
+  }
+
+  clearSearch() {
+
+      this.searchTerm = '';
+
+      this.loadEmployees();
+
+    }
+
+    toggleSort(column: string) {
+
+    if (this.sortBy !== column) {
+
+      this.sortBy = column;
+      this.sortOrder = 'asc';
+
+    }
+    else if (this.sortOrder === 'asc') {
+
+      this.sortOrder = 'desc';
+
+    }
+    else {
+
+      this.sortBy = '';
+      this.sortOrder = '';
+
+    }
+
+    this.loadEmployees();
+
+  }
+
+  resetSorting() {
+
+    this.sortBy = '';
+    this.sortOrder = '';
+
+    this.loadEmployees();
 
   }
 }

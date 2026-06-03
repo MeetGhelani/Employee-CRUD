@@ -1,5 +1,39 @@
 <div class="main-container">
 
+    @if (toastService.visible()) {
+
+    <div
+        class="toast"
+        [class.toast-success]="toastService.type() === 'success'"
+        [class.toast-error]="toastService.type() === 'error'"
+        [class.toast-warning]="toastService.type() === 'warning'"
+        [class.toast-info]="toastService.type() === 'info'"
+        [class.toast-hidden]="!toastService.visible()">
+
+        <div class="toast-header">
+
+            <div class="toast-message">
+
+                {{ toastService.message() }}
+
+            </div>
+
+            <button
+                class="toast-close-btn"
+                (click)="toastService.close()">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <div class="toast-progress"></div>
+
+    </div>
+
+    }
+
     <h1>
         Employee Management System
     </h1>

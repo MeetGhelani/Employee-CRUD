@@ -31,10 +31,21 @@ export class EmployeeService {
     this.employeeUpdatedSource.next();
   } 
 
-  getEmployees(): Observable<Employee[]> {
+  getEmployees(
+    search: string = '',
+    sortBy: string = '',
+    sortOrder: string = ''
+  ): Observable<Employee[]> {
 
     return this.http.get<Employee[]>(
-      this.apiUrl
+      this.apiUrl,
+      {
+        params: {
+          search,
+          sortBy,
+          sortOrder
+        }
+      }
     );
 
   }
