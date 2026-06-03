@@ -48,4 +48,12 @@ export class EmployeeService {
   );
 
 }
+
+  deleteEmployee(id: number) {
+
+  return this.http.delete(
+    `${this.apiUrl}/${id}`
+  );
+
+}
 }

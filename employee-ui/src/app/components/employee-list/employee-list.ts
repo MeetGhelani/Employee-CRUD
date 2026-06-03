@@ -38,10 +38,30 @@ loadEmployees() {
   ngOnInit(): void {
 
     this.loadEmployees();
-    
+
     this.employeeService
       .employeeUpdated$
       .subscribe(data => {
+
+        this.loadEmployees();
+
+      });
+
+  }
+
+  deleteEmployee(id: number) {
+
+    const confirmed = confirm(
+      'Are you sure you want to delete this employee?'
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.employeeService
+      .deleteEmployee(id)
+      .subscribe(() => {
 
         this.loadEmployees();
 
