@@ -1,15 +1,59 @@
-*{
+* {
     box-sizing: border-box;
-    font-family: trebuchet ms, sans-serif
+    margin: 0;
+    padding: 0;
+    font-family: "Trebuchet MS", sans-serif;
+}
+
+
+
+body {
+    background: #1e1e1e;
+    color: #ffffff;
+}
+
+.main-container {
+
+    max-width: 1400px;
+
+    margin: 0 auto;
+
+    padding: 10px;
 
 }
-h1{
+
+h1 {
+
     text-align: center;
-    margin: 20px 0;
-    color: #00fc60a6;
+
+    margin-bottom: 20px;
+
+    color: #22c55e;
+
+    font-size: 2.2rem;
+
+    font-weight: 700;
+
 }
-span{
-    display: block;
+
+.section-divider {
+
+    margin: 16px 0;
+
+    border: none;
+
+    height: 1px;
+
+    background: rgba(255,255,255,0.15);
+
+}
+
+.page-subtitle {
+
     text-align: center;
-    margin: 50px 0;
+
+    color: #a1a1aa;
+
+    margin-bottom: 24px;
+
 }

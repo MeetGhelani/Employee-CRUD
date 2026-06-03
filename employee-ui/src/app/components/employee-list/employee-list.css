@@ -1,13 +1,144 @@
-table {
-  border-collapse: collapse;
+.employee-list-container {
+  margin: 0 auto;
+}
+
+.list-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+}
+
+.employee-count {
+
+  font-size: 1rem;
+
+  font-weight: 600;
+
+  color: #00a76f;
+}
+
+.table-container {
+
+  max-height: 350px;
+  overflow-y: auto;
+
+  border-radius: 12px;
+  border: 1px solid #5e5e5e;
+
+}
+
+.employee-table {
+
   width: 100%;
+
+  border-collapse: collapse;
+
+  table-layout: fixed;
+
 }
 
-th,
-td {
-  padding: 10px;
-}
+.employee-table th {
 
-th {
   text-align: left;
+
+  padding: 14px;
+
+}
+
+.employee-table thead th {
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 10;
+
+  background: #003a2b;
+
+}
+
+.employee-table td {
+
+  text-align: left;
+
+  padding: 14px;
+
+  border-bottom: 1px solid #5e5e5e;
+
+}
+
+.employee-table tr:hover {
+
+  background: #494949;
+
+}
+
+.department-badge {
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  font-size: 0.85rem;
+
+  font-weight: 600;
+
+  background: #001236;
+
+}
+
+.action-buttons {
+
+  display: flex;
+
+  gap: 8px;
+
+}
+
+.edit-btn,
+.delete-btn {
+
+  border: none;
+
+  cursor: pointer;
+
+  padding: 8px 12px;
+
+  border-radius: 8px;
+
+  font-size: 0.9rem;
+  color: #fff;
+
+}
+
+.edit-btn {
+
+  background: #288ea7;
+
+}
+
+.delete-btn {
+
+  background: #c44b57;
+
+}
+
+.loading {
+
+  padding: 1rem;
+
+  text-align: center;
+
+}
+
+.table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
 }

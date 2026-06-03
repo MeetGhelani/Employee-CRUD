@@ -1,40 +1,80 @@
-<h2>Employee List</h2>
+<div class="employee-list-container">
 
-<p>Employee Count: {{ employees().length }}</p>
+  <div class="list-header">
+    <h2>Employee Directory</h2>
 
-<table border="1">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Department</th>
-      <th>Action</th>
-    </tr>
-  </thead>
+    <span class="employee-count">
+      Total Employees:
+      {{ employees().length }}
+    </span>
+  </div>
 
-  <tbody>
-    @for (
-      employee of employees();
-      track employee.id
-    ) {
-    <tr>
-      <td>{{ employee.id }}</td>
-      <td>{{ employee.name }}</td>
-      <td>{{ employee.email }}</td>
-      <td>{{ employee.department }}</td>
-      <td>
-        <button
-          (click)="editEmployee(employee)">
-          Edit
-        </button>
+  @if (loading()) {
 
-        <button
-          (click)="deleteEmployee(employee.id)">
-          Delete
-        </button>
-      </td>
-    </tr>
-}
-  </tbody>
-</table>
+    <div class="loading">
+      Loading employees...
+    </div>
+
+  } @else {
+
+    <div class="table-container">
+
+      <table class="employee-table">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (
+            employee of employees();
+            track employee.id
+          ) {
+
+            <tr>
+
+              <td>{{ employee.id }}</td>
+
+              <td>{{ employee.name }}</td>
+
+              <td>{{ employee.email }}</td>
+
+              <td>
+                <span class="department-badge">
+                  {{ employee.department }}
+                </span>
+              </td>
+
+              <td class="action-buttons">
+
+                <button
+                  class="edit-btn"
+                  (click)="editEmployee(employee)">
+                  Edit
+                </button>
+
+                <button
+                  class="delete-btn"
+                  (click)="deleteEmployee(employee.id)">
+                  Delete
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+    </div>
+  }
+</div>
