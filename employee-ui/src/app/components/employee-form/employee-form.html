@@ -1,6 +1,20 @@
-<h2>Add Employee</h2>
+
 
 <div class="employee-form">
+
+  <h2>
+
+  @if (editingEmployeeId !== null) {
+
+    Edit Employee
+
+  } @else {
+
+    Add Employee
+
+  }
+
+</h2>
   <form #employeeForm="ngForm" (ngSubmit)="saveEmployee(employeeForm)">
 
     <div class="form-group">
@@ -164,20 +178,35 @@
       </div>
     </div>
 
-    <button
-      type="submit"
-      [disabled]="employeeForm.invalid">
+    <div class="form-actions">
 
-      @if (editingEmployeeId !== null) {
+      <button
+        type="submit"
+        [disabled]="employeeForm.invalid">
 
-        Update Employee
+        @if (editingEmployeeId !== null) {
 
-      } @else {
+          Update Employee
 
-        Add Employee
+        } @else {
 
-      }
-    </button>
+          Add Employee
+
+        }
+
+      </button>
+
+      <button
+        type="button"
+        class="cancel-edit-btn"
+        (click)="clearForm()"
+        [class.hidden]="editingEmployeeId === null">
+
+        Cancel Edit
+
+      </button>
+
+    </div>
 
   </form>
 

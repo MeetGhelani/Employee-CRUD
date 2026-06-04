@@ -1,0 +1,552 @@
+/* ==========================================
+   AG GRID THEME
+========================================== */
+
+.ag-theme-quartz-dark {
+
+  --ag-background-color: #2a2a2a;
+
+  --ag-foreground-color: #ffffff;
+
+  --ag-header-background-color: #1f1f1f;
+
+  --ag-header-foreground-color: #ffffff;
+
+  --ag-border-color: rgba(255,255,255,0.08);
+
+  --ag-row-hover-color: rgba(34, 197, 94, 0.12);
+
+  --ag-selected-row-background-color: rgba(34, 197, 94, 0.18);
+
+  --ag-row-border-color: rgba(255,255,255,0.05);
+
+  --ag-odd-row-background-color: #2f2f2f;
+
+  --ag-header-column-separator-color: rgba(255,255,255,0.08);
+
+  --ag-header-column-resize-handle-color: #00c27a;
+
+  --ag-font-size: 14px;
+
+  --ag-font-family: "Trebuchet MS", sans-serif;
+
+  --ag-row-height: 60px;
+
+  --ag-header-height: 60px;
+
+  --ag-cell-horizontal-padding: 16px;
+
+  --ag-border-radius: 12px;
+
+}
+
+/* Hover row */
+
+.ag-theme-quartz-dark .ag-row:hover {
+
+  background: rgba(34, 197, 94, 0.12) !important;
+
+}
+
+.ag-theme-quartz-dark .ag-header {
+
+  font-weight: 700;
+
+  font-size: 15px;
+
+}
+
+.ag-theme-quartz-dark .ag-header-cell-label {
+
+  justify-content: flex-start;
+
+}
+
+/* Header */
+
+.ag-theme-quartz-dark .ag-header {
+
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+
+}
+
+/* Cells */
+
+.ag-theme-quartz-dark .ag-cell {
+
+  display: flex;
+
+  align-items: center;
+
+}
+
+/* ==========================================
+   GRID LAYOUT
+========================================== */
+
+.employee-grid-container {
+
+  margin-top: 20px;
+
+}
+
+.grid-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+
+}
+
+.grid-title {
+
+  font-size: 2rem;
+
+  font-weight: 700;
+
+}
+
+.employee-count {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  min-width: 180px;
+
+}
+
+.employee-count-label {
+
+  color: #e5e7eb;
+
+  font-weight: 600;
+
+}
+
+.employee-number {
+
+  color: #00c27a;
+
+  font-weight: 700;
+
+  min-width: 30px;
+
+  text-align: left;
+
+}
+
+.export-container {
+
+  position: relative;
+
+}
+
+.export-btn {
+
+  border: none;
+
+  padding: 10px 16px;
+
+  border-radius: 8px;
+
+  background: #28a745;
+
+  color: white;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition: 0.2s;
+
+}
+
+.export-btn:hover {
+
+  background: #218838;
+
+}
+
+.export-dropdown {
+
+  position: absolute;
+
+  top: 120%;
+
+  right: 0px;
+
+  min-width: 160px;
+
+  background: #2f2f2f;
+
+  border: 1px solid #555;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  z-index: 100;
+
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.3);
+
+}
+
+.dropdown-item {
+
+  width: 100%;
+
+  border: none;
+
+  background: transparent;
+
+  color: white;
+
+  text-align: left;
+
+  padding: 12px 16px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+}
+
+.dropdown-item:hover {
+
+  background: rgba(
+    0,
+    194,
+    122,
+    0.15
+  );
+
+  color: #00c27a;
+
+}
+
+.header-actions {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 16px;
+
+  width: 320px;
+
+  flex-shrink: 0;
+
+}
+
+
+/* ==========================================
+   SEARCH
+========================================== */
+
+.search-wrapper {
+
+  position: relative;
+
+}
+
+.search-wrapper input {
+
+  width: 350px;
+
+  padding: 10px 42px 10px 14px;
+
+  border-radius: 999px;
+
+  border: 1px solid #555;
+
+  background: #333;
+
+  color: white;
+
+  outline: none;
+
+  transition: 0.2s;
+
+}
+
+.search-wrapper input:focus {
+
+  border-color: #00c27a;
+
+  box-shadow:
+    0 0 0 3px rgba(0, 194, 122, 0.15);
+
+}
+
+.clear-search-btn {
+
+  position: absolute;
+
+  right: 10px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  width: 24px;
+
+  height: 24px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #d5545f;
+
+  color: white;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 1rem;
+
+  transition: 0.2s;
+
+}
+
+.clear-search-btn:hover {
+
+  background: #660000;
+  color: #ff6b6b;
+
+}
+
+/* ==========================================
+   GRID WRAPPER
+========================================== */
+
+.grid-wrapper {
+
+  height: 362px;
+
+  width: 100%;
+
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+}
+
+/* ==========================================
+   MODAL
+========================================== */
+
+.modal-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.35);
+
+  backdrop-filter: blur(8px);
+
+  -webkit-backdrop-filter: blur(8px);
+
+  z-index: 1000;
+
+}
+
+.modal {
+
+  width: 420px;
+
+  max-width: 90vw;
+
+  padding: 28px;
+
+  border-radius: 16px;
+
+  background: #3d3d3d;
+
+  border: 1px solid #5e5e5e;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+
+  animation: modalPop 0.2s ease-out;
+
+}
+
+.modal h3 {
+
+  text-align: center;
+
+  margin-bottom: 14px;
+
+}
+
+.modal p {
+
+  text-align: center;
+
+  color: #d6d6d6;
+
+  margin-bottom: 24px;
+
+}
+
+.modal-actions {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 12px;
+
+}
+
+.cancel-btn {
+
+  min-width: 110px;
+
+  padding: 10px 18px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #666;
+
+  color: white;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition: 0.2s;
+
+}
+
+.cancel-btn:hover {
+
+  background: #777;
+
+}
+
+.modal-delete-btn {
+
+  min-width: 110px;
+
+  padding: 10px 18px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #d5545f;
+
+  color: white;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition: 0.2s;
+
+}
+
+.modal-delete-btn:hover {
+
+  background: #ef4444;
+
+  transform: translateY(-1px);
+
+}
+
+/* ==========================================
+   CUSTOM SCROLLBAR
+========================================== */
+
+:host ::ng-deep .ag-body-vertical-scroll-viewport::-webkit-scrollbar,
+:host ::ng-deep .ag-body-horizontal-scroll-viewport::-webkit-scrollbar {
+
+  width: 8px;
+
+  height: 8px;
+
+}
+
+:host ::ng-deep .ag-body-vertical-scroll-viewport::-webkit-scrollbar-track,
+:host ::ng-deep .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-track {
+
+  background: #232323;
+
+}
+
+:host ::ng-deep .ag-body-vertical-scroll-viewport::-webkit-scrollbar-thumb,
+:host ::ng-deep .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-thumb {
+
+  background: #555;
+
+  border-radius: 999px;
+
+}
+
+:host ::ng-deep .ag-body-vertical-scroll-viewport::-webkit-scrollbar-thumb:hover,
+:host ::ng-deep .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-thumb:hover {
+
+  background: #00c27a;
+
+}
+
+/* Firefox */
+
+.ag-root-wrapper {
+
+  scrollbar-width: thin;
+
+  scrollbar-color: #555 #2a2a2a;
+
+}
+
+/* ==========================================
+   ANIMATION
+========================================== */
+
+@keyframes modalPop {
+
+  from {
+
+    opacity: 0;
+
+    transform: scale(0.95);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform: scale(1);
+
+  }
+
+}

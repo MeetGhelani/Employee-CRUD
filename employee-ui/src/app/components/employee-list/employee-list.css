@@ -373,47 +373,59 @@
 
   gap: 12px;
 
+  margin-top: 24px;
+
 }
 
 .cancel-btn {
 
-  border: none;
-
-  cursor: pointer;
+  min-width: 100px;
 
   padding: 10px 18px;
 
+  border: none;
+
   border-radius: 8px;
+
+  background: #666;
+
+  color: white;
+
+  cursor: pointer;
 
   font-weight: 600;
 
 }
 
-.cancel-btn {
-
-  background: #666666;
-
-  color: white;
-
-}
-
 .cancel-btn:hover {
 
-  background: #777777;
+  background: #777;
 
 }
 
-.modal .delete-btn {
+.modal-delete-btn {
 
-  background: #c44b57;
+  min-width: 100px;
+
+  padding: 10px 18px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #d5545f;
 
   color: white;
 
+  cursor: pointer;
+
+  font-weight: 600;
+
 }
 
-.modal .delete-btn:hover {
+.modal-delete-btn:hover {
 
-  background: #d85865;
+  background: #e1636d;
 
 }
 

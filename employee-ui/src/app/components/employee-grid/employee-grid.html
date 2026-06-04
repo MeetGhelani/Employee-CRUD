@@ -1,0 +1,170 @@
+<div class="employee-grid-container">
+
+  <div class="grid-header">
+
+    <span class="grid-title">
+
+      Employee Directory
+
+    </span>
+
+    <div class="search-wrapper">
+
+      <input
+        type="text"
+        placeholder="🔍 Search employees..."
+        [(ngModel)]="searchText"
+        (input)="onQuickFilter()"
+      />
+
+      @if (searchText.length > 0) {
+
+        <button
+          class="clear-search-btn"
+          (click)="clearSearch()">
+
+          ×
+
+        </button>
+
+      }
+
+
+    </div>
+
+    <div class="header-actions">
+      <div class="export-container">
+
+       <button
+          class="export-btn"
+          (click)="toggleExportMenu(); $event.stopPropagation()">
+
+          Export ▼
+
+        </button>
+
+        @if (showExportMenu) {
+
+          <div
+            class="export-dropdown"
+            (click)="$event.stopPropagation()">
+
+            <button
+              class="dropdown-item"
+              (click)="exportCsv()">
+
+              Export CSV
+
+            </button>
+
+            <button
+              class="dropdown-item"
+              (click)="exportExcel()">
+
+              Export Excel
+
+            </button>
+
+          </div>
+
+        }
+
+      </div>
+      <span class="employee-count">
+
+        <span class="employee-count-label">
+
+          Total Employees:
+
+        </span>
+
+        <span class="employee-number">
+
+          {{ displayedEmployeeCount }}
+
+        </span>
+
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="ag-theme-quartz-dark grid-wrapper">
+
+        <ag-grid-angular
+
+        style="height: 100%; width: 100%;"
+
+        [rowData]="rowData"
+
+        [rowHeight]="50"
+
+        [headerHeight]="60"
+
+        [columnDefs]="columnDefs"
+
+        [defaultColDef]="defaultColDef"
+
+        [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+
+        (gridReady)="onGridReady($event)"
+
+        (gridSizeChanged)="onGridSizeChanged()"
+
+        (filterChanged)="updateEmployeeCount()"
+
+        (modelUpdated)="updateEmployeeCount()">
+
+        </ag-grid-angular>
+
+  </div>
+    @if (showDeleteModal) {
+
+    <div
+        class="modal-overlay"
+        (click)="cancelDelete()">
+
+        <div
+        class="modal"
+        (click)="$event.stopPropagation()">
+
+        <h3>
+
+            Delete Employee
+
+        </h3>
+
+        <p>
+
+            Are you sure you want to delete this employee?
+
+        </p>
+
+        <div class="modal-actions">
+
+            <button
+            class="cancel-btn"
+            (click)="cancelDelete()">
+
+            Cancel
+
+            </button>
+
+           <button
+            class="modal-delete-btn"
+            (click)="confirmDelete()">
+
+            Delete
+
+          </button>
+
+        </div>
+
+        </div>
+
+    </div>
+
+    }
+
+</div>

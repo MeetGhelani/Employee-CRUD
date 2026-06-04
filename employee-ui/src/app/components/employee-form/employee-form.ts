@@ -1,4 +1,4 @@
-import { Component, effect } from '@angular/core';
+import { Component, effect , untracked} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
@@ -32,38 +32,46 @@ export class EmployeeForm {
 
     effect(() => {
 
-      const employee =
-        this.employeeService
-          .selectedEmployee();
+    const employee =
+      this.employeeService
+        .selectedEmployee();
 
-      if (employee) {
+    queueMicrotask(() => {
 
-        this.editingEmployeeId =
-          employee.id;
+      untracked(() => {
 
-        this.name =
-          employee.name;
+        if (employee) {
 
-        this.email =
-          employee.email;
+          this.editingEmployeeId =
+            employee.id;
 
-        this.department =
-          employee.department;
+          this.name =
+            employee.name;
 
-      }
-      else {
+          this.email =
+            employee.email;
 
-        this.editingEmployeeId = null;
+          this.department =
+            employee.department;
 
-        this.name = '';
+        }
+        else {
 
-        this.email = '';
+          this.editingEmployeeId = null;
 
-        this.department = '';
+          this.email = '';
 
-      }
+          this.department = '';
+
+        }
+
+        this.cdr.detectChanges();
+
+      });
 
     });
+
+  });
 
   }
 
@@ -184,6 +192,9 @@ export class EmployeeForm {
     this.email = '';
 
     this.department = '';
+
+    this.duplicateEmailError = '';
+
 
     this.employeeService
       .selectedEmployee
