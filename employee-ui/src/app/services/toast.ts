@@ -52,7 +52,7 @@ export class ToastService {
 
         this.close();
 
-      }, 3000);
+      }, 4000);
 
   }
 
@@ -65,7 +65,7 @@ export class ToastService {
 
         this.message.set('');
 
-      }, 300);
+      }, 400);
 
   }
 

@@ -130,7 +130,7 @@ body {
 
   animation:
     toastProgress
-    3s linear forwards;
+    4s linear forwards;
 
 }
 
@@ -141,6 +141,8 @@ body {
   justify-content: space-between;
 
   align-items: center;
+
+  padding-right: 8px;
 
 }
 
@@ -160,7 +162,7 @@ body {
 
   padding: 0;
 
-  margin-left: 12px;
+  margin-left: 0px;
 
   opacity: 0.7;
 
