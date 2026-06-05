@@ -1,8 +1,8 @@
-import { Component, OnInit, signal } from '@angular/core';
+/*import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Employee } from '../../models/employee';
-import { EmployeeService } from '../../services/employee';
-import { ToastService } from '../../services/toast';
+import { Employee } from '../../src/app/models/employee';
+import { EmployeeService } from '../../src/app/services/employee';
+import { ToastService } from '../../src/app/services/toast';
 
 @Component({
   selector: 'app-employee-list',
@@ -215,4 +215,4 @@ loadEmployees() {
     this.loadEmployees();
 
   }
-}
+}*/

@@ -80,7 +80,7 @@
 
         <span class="employee-number">
 
-          {{ displayedEmployeeCount }}
+          {{ totalEmployeeCount }}
 
         </span>
 
@@ -114,11 +114,156 @@
 
         (filterChanged)="updateEmployeeCount()"
 
-        (modelUpdated)="updateEmployeeCount()">
+        (modelUpdated)="updateEmployeeCount()"
+
+        (sortChanged)="onSortChanged()">
 
         </ag-grid-angular>
 
   </div>
+
+  <div class="pagination-container">
+
+    <button
+
+      class="pagination-btn"
+
+      [disabled]="currentPage === 1"
+
+      (click)="previousPage()">
+
+      ◀ Previous
+
+    </button>
+
+    <span class="page-info">
+
+      Page {{ currentPage }}
+
+      of
+
+      {{ totalPages }}
+
+    </span>
+
+    <div class="page-numbers">
+
+      @for (
+
+        page of getPageNumbers();
+
+        track $index
+
+      ) {
+
+        @if (page === '...') {
+
+          <span class="pagination-dots">
+
+            ...
+
+          </span>
+
+        }
+
+        @else {
+
+          <button
+
+            class="page-number"
+
+            [class.active-page]="
+
+              page === currentPage
+
+            "
+
+            (click)="goToPage(+page)">
+
+            {{ page }}
+
+          </button>
+
+        }
+
+      }
+
+    </div>
+
+    <button
+
+      class="pagination-btn"
+
+      [disabled]="
+
+        currentPage === totalPages
+
+      "
+
+      (click)="nextPage()">
+
+      Next ▶
+
+    </button>
+
+    <div class="page-size-container">
+
+      <span>
+
+        Records per page :
+
+      </span>
+
+      <div class="page-size-dropdown">
+
+      <button
+        (click)="
+          togglePageSizeMenu();
+          $event.stopPropagation()
+        ">
+
+        {{ pageSize }} <span class="arrow">▼</span>
+
+      </button>
+
+        @if (showPageSizeMenu) {
+
+          <div
+            class="dropdown-menu"
+            (click)="$event.stopPropagation()">
+
+            @for (
+              size of pageSizeOptions;
+              track size
+            ) {
+
+              <div
+
+                [class.active]="
+                  pageSize === size
+                "
+
+                (click)="
+                  changePageSize(size)
+                ">
+
+                {{ size }}
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+
     @if (showDeleteModal) {
 
     <div

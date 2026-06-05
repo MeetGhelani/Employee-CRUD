@@ -7,6 +7,9 @@ import { Subject } from 'rxjs';
 import { Employee } from '../models/employee';
 import { environment } from '../../environments/environment';
 
+import { PagedEmployeeResponse }
+from '../models/paged-employee-response';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,16 +37,20 @@ export class EmployeeService {
   getEmployees(
     search: string = '',
     sortBy: string = '',
-    sortOrder: string = ''
-  ): Observable<Employee[]> {
+    sortOrder: string = '',
+    page: number = 1,
+    pageSize: number = 10
+  ): Observable<PagedEmployeeResponse>{
 
-    return this.http.get<Employee[]>(
+    return this.http.get<PagedEmployeeResponse>(
       this.apiUrl,
       {
         params: {
           search,
           sortBy,
-          sortOrder
+          sortOrder,
+          page,
+          pageSize
         }
       }
     );

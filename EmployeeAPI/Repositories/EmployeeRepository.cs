@@ -15,9 +15,20 @@ public class EmployeeRepository
                 "Connection string not found.");
     }
 
-    public async Task<List<Employee>> GetEmployeesAsync( string? search, string? sortBy, string? sortOrder)
+    public async Task<PagedEmployeeResult>
+    GetEmployeesAsync(
+    string? search,
+    string? sortBy,
+    string? sortOrder,
+    int page,
+    int pageSize)
     {
+
+
         var employees = new List<Employee>();
+
+        var offset =
+        (page - 1) * pageSize;
 
         var orderByClause =
             sortBy?.ToLower() switch
@@ -38,6 +49,29 @@ public class EmployeeRepository
 
         await connection.OpenAsync();
 
+        var countQuery = @"
+        SELECT COUNT(*)
+        FROM Employees
+        WHERE
+            @Search IS NULL
+            OR Name LIKE '%' + @Search + '%'
+            OR Email LIKE '%' + @Search + '%'
+            OR Department LIKE '%' + @Search + '%'";
+
+        var countCommand =
+            new SqlCommand(
+                countQuery,
+                connection);
+
+        countCommand.Parameters.AddWithValue(
+            "@Search",
+            string.IsNullOrWhiteSpace(search)
+                ? DBNull.Value
+                : search);
+
+        var totalCount =
+            (int)await countCommand.ExecuteScalarAsync();
+
         var query = $@"
         SELECT
             Id,
@@ -52,7 +86,9 @@ public class EmployeeRepository
             OR Department LIKE '%' + @Search + '%'
         ORDER BY
             {orderByClause}
-            {direction}";
+            {direction}
+        OFFSET @Offset ROWS
+        FETCH NEXT @PageSize ROWS ONLY";
 
         var command =
             new SqlCommand(
@@ -64,6 +100,14 @@ public class EmployeeRepository
         string.IsNullOrWhiteSpace(search)
             ? DBNull.Value
             : search);
+
+                command.Parameters.AddWithValue(
+            "@Offset",
+            offset);
+
+        command.Parameters.AddWithValue(
+            "@PageSize",
+            pageSize);
 
         using var reader =
             await command.ExecuteReaderAsync();
@@ -79,7 +123,11 @@ public class EmployeeRepository
             });
         }
 
-        return employees;
+        return new PagedEmployeeResult
+        {
+            Employees = employees,
+            TotalCount = totalCount
+        };
     }
 
     public async Task<Employee> CreateEmployeeAsync(

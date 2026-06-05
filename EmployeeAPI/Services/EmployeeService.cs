@@ -13,17 +13,21 @@ public class EmployeeService
         _repository = repository;
     }
 
-    public async Task<List<Employee>>
+   public async Task<PagedEmployeeResult>
     GetEmployeesAsync(
         string? search,
         string? sortBy,
-        string? sortOrder)
+        string? sortOrder,
+        int page,
+        int pageSize)
     {
         return await _repository
             .GetEmployeesAsync(
                 search,
                 sortBy,
-                sortOrder);
+                sortOrder,
+                page,
+                pageSize);
     }
 
     public async Task<Employee>

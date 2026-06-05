@@ -18,18 +18,20 @@ public class EmployeesController : ControllerBase
 }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<EmployeeDto>>>
-
+    public async Task<ActionResult<PagedEmployeeResponseDto>>
     
     GetEmployees(
         [FromQuery] string? search,
         [FromQuery] string? sortBy,
-        [FromQuery] string? sortOrder)    {
+        [FromQuery] string? sortOrder,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
+        )    {
 
-        var employees =
-        await _service.GetEmployeesAsync(search, sortBy, sortOrder);
-        var result =
-            employees.Select(e => new EmployeeDto
+        var pagedResult =
+            await _service.GetEmployeesAsync(search, sortBy, sortOrder, page, pageSize);
+        var employeeDtos =
+            pagedResult.Employees.Select(e => new EmployeeDto
             {
                 Id = e.Id,
                 Name = e.Name,
@@ -37,7 +39,15 @@ public class EmployeesController : ControllerBase
                 Department = e.Department
             });
 
-        return Ok(result);
+        return Ok(
+            new PagedEmployeeResponseDto
+            {
+                Employees = employeeDtos,
+                TotalCount =
+                    pagedResult.TotalCount,
+                Page = page,
+                PageSize = pageSize
+        });
     }
 
     [HttpPost]

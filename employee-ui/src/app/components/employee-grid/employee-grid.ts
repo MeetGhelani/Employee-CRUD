@@ -7,6 +7,11 @@ from '../employee-action-renderer/employee-action-renderer';
 import { ToastService }
 from '../../services/toast';
 
+import {
+  Subject,
+  debounceTime,
+  distinctUntilChanged
+} from 'rxjs';
 
 import {
   Component,
@@ -21,7 +26,8 @@ import {
   GridApi,
   GridReadyEvent,
   ModuleRegistry,
-  AllCommunityModule
+  AllCommunityModule,
+  SortChangedEvent
 } from 'ag-grid-community';
 
 
@@ -48,6 +54,25 @@ ModuleRegistry.registerModules([
 })
 export class EmployeeGrid implements OnInit {
 
+    currentPage = 1;
+
+    pageSize = 10;
+
+   pageSizeOptions = [
+
+      10,
+      25,
+      50,
+      100
+
+    ];
+
+    showPageSizeMenu = false;
+
+    totalPages = 0;
+
+  private searchSubject = new Subject<string>();
+
   private gridApi!: GridApi;
 
   showDeleteModal = false;
@@ -55,18 +80,27 @@ export class EmployeeGrid implements OnInit {
   showExportMenu = false;
 
   @HostListener('document:click')
-    closeDropdown() {
+  closeDropdown() {
 
-      this.showExportMenu = false;
+    this.showExportMenu = false;
 
-    }
+    this.showPageSizeMenu = false;
+
+  }
 
   displayedEmployeeCount = 0;
+
+  totalEmployeeCount = 0;
 
   employeeToDeleteId:
   number | null = null;
 
   searchText = '';
+
+  currentSortField = '';
+
+  currentSortOrder = '';
+
   rowData: Employee[] = [];
 
   overlayNoRowsTemplate = `
@@ -182,9 +216,25 @@ export class EmployeeGrid implements OnInit {
 
   ) {}
 
- ngOnInit(): void {
+  ngOnInit(): void {
 
     this.loadEmployees();
+
+    this.searchSubject
+      .pipe(
+
+        debounceTime(400),
+
+        distinctUntilChanged()
+
+      )
+      .subscribe(() => {
+
+        this.currentPage = 1;
+
+        this.loadEmployees();
+
+      });
 
     this.employeeService
       .employeeUpdated$
@@ -214,6 +264,37 @@ export class EmployeeGrid implements OnInit {
       displayedRows > 0
         ? displayedRows
         : this.rowData.length;
+
+  }
+
+  togglePageSizeMenu() {
+
+    this.showPageSizeMenu =
+      !this.showPageSizeMenu;
+
+  }
+
+  changePageSize(
+    size: number
+  ) {
+
+    if (
+      this.pageSize === size
+    ) {
+
+      this.showPageSizeMenu = false;
+
+      return;
+
+    }
+
+    this.pageSize = size;
+
+    this.currentPage = 1;
+
+    this.showPageSizeMenu = false;
+
+    this.loadEmployees();
 
   }
 
@@ -271,47 +352,56 @@ export class EmployeeGrid implements OnInit {
     );
 
   }
-
   loadEmployees() {
 
     this.employeeService
-      .getEmployees()
+      .getEmployees(
+        this.searchText,
+        this.currentSortField,
+        this.currentSortOrder,
+        this.currentPage,
+        this.pageSize
+      )
       .subscribe({
 
-       next: (data) => {
+        next: (data) => {
 
-        this.rowData = [...data];
+          this.rowData =
+            [...data.employees];
 
-        this.displayedEmployeeCount = data.length;
-          setTimeout(() => {
+          this.totalEmployeeCount = data.totalCount;
 
-          this.updateEmployeeCount();
+          this.displayedEmployeeCount = this.rowData.length;
 
-          },0);
+          this.totalPages =
+            Math.ceil(
+              data.totalCount /
+              this.pageSize 
+            );
 
-        if (this.gridApi) {
+          this.cdr.detectChanges(); 
 
-          this.gridApi.setGridOption(
-            'rowData',
-            this.rowData
-          );
+          if (this.gridApi) {
 
-          this.updateEmployeeCount();
+            this.gridApi.setGridOption(
+              'rowData',
+              this.rowData
+            );
 
-          if (this.rowData.length === 0) {
+            if (this.rowData.length === 0) {
 
-            this.gridApi.showNoRowsOverlay();
+              this.gridApi.showNoRowsOverlay();
+
+            }
+            else {
+
+              this.gridApi.hideOverlay();
+
+            }
 
           }
-          else {
 
-            this.gridApi.hideOverlay();
-
-          }
-
-        }
-
-      },
+        },
 
         error: (error) => {
 
@@ -325,6 +415,139 @@ export class EmployeeGrid implements OnInit {
       });
 
   }
+
+  previousPage() {
+
+    if (this.currentPage > 1) {
+
+      this.currentPage--;
+
+      this.loadEmployees();
+
+    }
+
+  }
+
+  nextPage() {
+
+    if (
+
+      this.currentPage <
+
+      this.totalPages
+
+    ) {
+
+      this.currentPage++;
+
+      this.loadEmployees();
+
+    }
+
+  }
+
+  onPageSizeChange() {
+
+    this.currentPage = 1;
+
+    this.loadEmployees();
+
+  }
+
+  goToPage(page: number) {
+
+    if (
+
+      page < 1 ||
+
+      page > this.totalPages ||
+
+      page === this.currentPage
+
+    ) {
+
+      return;
+
+    }
+
+    this.currentPage = page;
+
+    this.loadEmployees();
+
+  }
+
+  getPageNumbers(): (number | string)[] {
+
+    const pages: (number | string)[] = [];
+
+    if (this.totalPages <= 7) {
+
+      for (
+
+        let i = 1;
+
+        i <= this.totalPages;
+
+        i++
+
+      ) {
+
+        pages.push(i);
+
+      }
+
+      return pages;
+
+    }
+
+    if (this.currentPage <= 3) {
+
+      pages.push(
+        1,
+        2,
+        3,
+        '...',
+        this.totalPages
+      );
+
+      return pages;
+
+    }
+
+    if (
+
+      this.currentPage >=
+
+      this.totalPages - 2
+
+    ) {
+
+      pages.push(
+        1,
+        '...',
+        this.totalPages - 2,
+        this.totalPages - 1,
+        this.totalPages
+      );
+
+      return pages;
+
+    }
+
+    pages.push(
+      1,
+      '...',
+      this.currentPage - 1,
+      this.currentPage,
+      this.currentPage + 1,
+      '...',
+      this.totalPages
+    );
+
+    return pages;
+
+  }
+
   onGridReady(event: GridReadyEvent) {
 
     this.gridApi = event.api;
@@ -349,7 +572,7 @@ export class EmployeeGrid implements OnInit {
 
   }
 
-  onQuickFilter() {
+  onSortChanged() {
 
     if (!this.gridApi) {
 
@@ -357,50 +580,52 @@ export class EmployeeGrid implements OnInit {
 
     }
 
-    this.gridApi.setGridOption(
-      'quickFilterText',
+    const sortedColumn =
+      this.gridApi
+        .getColumnState()
+        .find(
+          column => column.sort
+        );
+
+    if (sortedColumn) {
+
+      this.currentSortField =
+        sortedColumn.colId;
+
+      this.currentSortOrder =
+        sortedColumn.sort ?? '';
+
+    }
+    else {
+
+      this.currentSortField = '';
+
+      this.currentSortOrder = '';
+
+    }
+
+    this.currentPage = 1;
+
+    this.loadEmployees();
+
+  }
+
+  onQuickFilter() {
+
+    this.searchSubject.next(
       this.searchText
     );
 
-    setTimeout(() => {
-
-      this.updateEmployeeCount();
-
-      const displayedRows =
-        this.gridApi.getDisplayedRowCount();
-
-      if (displayedRows === 0) {
-
-        this.gridApi.showNoRowsOverlay();
-
-      }
-      else {
-
-        this.gridApi.hideOverlay();
-
-      }
-
-    });
-
   }
+
+
   clearSearch() {
 
     this.searchText = '';
 
-    if (!this.gridApi) {
+    this.currentPage = 1;
 
-      return;
-
-    }
-
-    this.gridApi.setGridOption(
-      'quickFilterText',
-      ''
-    );
-
-    this.gridApi.hideOverlay();
-
-    this.updateEmployeeCount();
+    this.loadEmployees();
 
   }
 
@@ -467,6 +692,18 @@ export class EmployeeGrid implements OnInit {
             this.cancelDelete();
 
             this.cdr.detectChanges();
+
+            if (
+
+              this.rowData.length === 1 &&
+
+              this.currentPage > 1
+
+            ) {
+
+              this.currentPage--;
+
+            }
 
             this.employeeService
               .notifyEmployeeUpdated();
