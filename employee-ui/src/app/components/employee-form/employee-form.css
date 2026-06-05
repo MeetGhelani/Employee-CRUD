@@ -102,6 +102,141 @@ h2{
 
 }
 
+.employee-form select {
+
+  width: 100%;
+
+  height: 35px;
+
+  padding: 0 14px;
+
+  border-radius: 10px;
+
+  border: 1px solid #444;
+
+  background: #1f1f1f;
+
+  color: #ffffff;
+
+  font-size: 15px;
+
+  transition: all 0.2s ease;
+
+  cursor: pointer;
+
+}
+
+.employee-form select:focus {
+
+  outline: none;
+
+  border-color: #00c27a;
+
+  box-shadow:
+    0 0 0 3px rgba(0,194,122,0.15);
+
+}
+
+.employee-form select option {
+
+  background: #1f1f1f;
+
+  color: white;
+
+}
+
+.custom-dropdown {
+
+  position: relative;
+
+  width: 100%;
+
+}
+
+.dropdown-btn {
+
+  width: 100%;
+
+  height: 38px;
+
+  padding: 0 14px;
+
+  border-radius: 10px;
+
+  border: 1px solid #444;
+
+  background: #1f1f1f;
+
+  color: white;
+
+  cursor: pointer;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  font-size: 14px;
+
+}
+
+.dropdown-btn:hover {
+
+  border-color: #00c27a;
+
+}
+
+.dropdown-menu {
+
+  position: absolute;
+
+  top: calc(100% + 4px);
+
+  left: 0;
+
+  right: 0;
+
+  z-index: 1000;
+
+  background: #1f1f1f;
+
+  border: 1px solid #444;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,.35);
+
+}
+
+.dropdown-item {
+
+  padding: 10px 14px;
+
+  color: white;
+
+  cursor: pointer;
+
+}
+
+.dropdown-item:hover {
+
+  background:
+    rgba(0,194,122,.15);
+
+}
+
+.dropdown-btn:disabled {
+
+  opacity: 0.5;
+
+  cursor: not-allowed;
+
+}
+
 input.ng-invalid.ng-touched {
 
     border: 1px solid #ef4444;
@@ -111,6 +246,18 @@ input.ng-invalid.ng-touched {
 input.ng-valid.ng-touched {
 
     border: 1px solid #22c55e;
+
+}
+
+select.ng-invalid.ng-touched {
+
+  border: 1px solid #ef4444;
+
+}
+
+select.ng-valid.ng-touched {
+
+  border: 1px solid #22c55e;
 
 }
 
@@ -144,6 +291,21 @@ button:disabled {
 
 }
 
+.dual-dropdown-row {
+
+  display: flex;
+
+  gap: 12px;
+
+  width: 100%;
+
+}
+
+.half-width {
+
+  flex: 1;
+
+}
 
 /* ==========================================
    FORM ACTION BUTTONS
@@ -242,5 +404,15 @@ button:disabled {
   color: white;
 
   transform: translateY(-1px);
+
+}
+
+@media (max-width: 768px) {
+
+  .dual-dropdown-row {
+
+    flex-direction: column;
+
+  }
 
 }

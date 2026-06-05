@@ -8,5 +8,11 @@ public class EmployeeDto
 
     public string Email { get; set; } = string.Empty;
 
-    public string Department { get; set; } = string.Empty;
+    public int DepartmentId { get; set; }
+
+    public int DesignationId { get; set; }
+
+    public string DepartmentName { get; set; } = string.Empty;
+
+    public string DesignationName { get; set; } = string.Empty;
 }

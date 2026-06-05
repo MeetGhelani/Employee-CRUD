@@ -20,10 +20,10 @@ public class UpdateEmployeeDto
     public string Email { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(100, MinimumLength = 2)]
-    [RegularExpression(
-        @"^[A-Za-z\s]+$",
-        ErrorMessage =
-        "Department can contain only letters and spaces.")]
-    public string Department { get; set; } = string.Empty;
+    [Range(1, int.MaxValue)]
+    public int DepartmentId { get; set; }
+
+    [Required]
+    [Range(1, int.MaxValue)]
+    public int DesignationId { get; set; }
 }

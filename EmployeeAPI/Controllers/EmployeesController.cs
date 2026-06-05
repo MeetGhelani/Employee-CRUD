@@ -10,12 +10,19 @@ namespace EmployeeAPI.Controllers;
 [Route("api/[controller]")]
 public class EmployeesController : ControllerBase
 {
+
+    private readonly DesignationService
+    _designationService;
     private readonly EmployeeService _service;
-   public EmployeesController(
-    EmployeeService service)
-{
-    _service = service;
-}
+    public EmployeesController(
+        EmployeeService service,
+        DesignationService designationService)
+    {
+        _service = service;
+
+        _designationService =
+            designationService;
+    }
 
     [HttpGet]
     public async Task<ActionResult<PagedEmployeeResponseDto>>
@@ -36,7 +43,15 @@ public class EmployeesController : ControllerBase
                 Id = e.Id,
                 Name = e.Name,
                 Email = e.Email,
-                Department = e.Department
+
+                DepartmentId = e.DepartmentId,
+                DesignationId = e.DesignationId,
+
+                DepartmentName =
+                    e.DepartmentName ?? string.Empty,
+
+                DesignationName =
+                    e.DesignationName ?? string.Empty
             });
 
         return Ok(
@@ -44,7 +59,7 @@ public class EmployeesController : ControllerBase
             {
                 Employees = employeeDtos,
                 TotalCount =
-                    pagedResult.TotalCount,
+                pagedResult.TotalCount,
                 Page = page,
                 PageSize = pageSize
         });
@@ -67,22 +82,57 @@ public class EmployeesController : ControllerBase
                     "Email already exists."
             });
         }
-        var employee = new Employee
+
+        var validCombination =
+            await _designationService
+                .IsDesignationInDepartmentAsync(
+                    dto.DesignationId,
+                    dto.DepartmentId);
+
+        if (!validCombination)
+        {
+            return BadRequest(
+                new
+                {
+                    message =
+                        "Designation does not belong to selected department."
+                });
+        }
+
+       var employee = new Employee
         {
             Name = dto.Name,
             Email = dto.Email,
-            Department = dto.Department
+
+            DepartmentId =
+                dto.DepartmentId,
+
+            DesignationId =
+                dto.DesignationId
         };
 
         var createdEmployee =
         await _service.CreateEmployeeAsync(employee);       
 
-        var result = new EmployeeDto
+       var result = new EmployeeDto
         {
             Id = createdEmployee.Id,
             Name = createdEmployee.Name,
             Email = createdEmployee.Email,
-            Department = createdEmployee.Department
+
+            DepartmentId =
+                createdEmployee.DepartmentId,
+
+            DesignationId =
+                createdEmployee.DesignationId,
+
+            DepartmentName =
+                createdEmployee.DepartmentName
+                ?? string.Empty,
+
+            DesignationName =
+                createdEmployee.DesignationName
+                ?? string.Empty
         };
 
         return CreatedAtAction(
@@ -111,11 +161,32 @@ public class EmployeesController : ControllerBase
             });
         }
 
-        var employee = new Employee
+        var validCombination =
+            await _designationService
+                .IsDesignationInDepartmentAsync(
+                    dto.DesignationId,
+                    dto.DepartmentId);
+
+        if (!validCombination)
+        {
+            return BadRequest(
+                new
+                {
+                    message =
+                        "Designation does not belong to selected department."
+                });
+        }
+
+       var employee = new Employee
         {
             Name = dto.Name,
             Email = dto.Email,
-            Department = dto.Department
+
+            DepartmentId =
+                dto.DepartmentId,
+
+            DesignationId =
+                dto.DesignationId
         };
 
         var updated =

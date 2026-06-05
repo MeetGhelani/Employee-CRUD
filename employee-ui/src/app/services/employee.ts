@@ -57,11 +57,12 @@ export class EmployeeService {
 
   }
 
-  addEmployee(employee: {
-    name: string;
-    email: string;
-    department: string;
-  }) {
+    addEmployee(employee: {
+      name: string;
+      email: string;
+      departmentId: number;
+      designationId: number;
+    }) {
 
     return this.http.post(
       this.apiUrl,
@@ -78,13 +79,13 @@ export class EmployeeService {
   }
 
   updateEmployee(
-  id: number,
-  employee: {
-    name: string;
-    email: string;
-    department: string;
-  }
-  ) {
+    id: number,
+    employee: {
+      name: string;
+      email: string;
+      departmentId: number;
+      designationId: number;
+    }) {
 
     return this.http.put(
       `${this.apiUrl}/${id}`,

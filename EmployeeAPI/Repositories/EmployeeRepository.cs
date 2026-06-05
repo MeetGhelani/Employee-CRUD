@@ -17,93 +17,50 @@ public class EmployeeRepository
 
     public async Task<PagedEmployeeResult>
     GetEmployeesAsync(
-    string? search,
-    string? sortBy,
-    string? sortOrder,
-    int page,
-    int pageSize)
+        string? search,
+        string? sortBy,
+        string? sortOrder,
+        int page,
+        int pageSize)
     {
-
-
-        var employees = new List<Employee>();
-
-        var offset =
-        (page - 1) * pageSize;
-
-        var orderByClause =
-            sortBy?.ToLower() switch
-            {
-                "name" => "Name",
-                "email" => "Email",
-                "department" => "Department",
-                _ => "Id"
-            };
-
-        var direction =
-            sortOrder?.ToLower() == "desc"
-                ? "DESC"
-                : "ASC";
+        var employees =
+            new List<Employee>();
 
         using var connection =
-            new SqlConnection(_connectionString);
+            new SqlConnection(
+                _connectionString);
 
         await connection.OpenAsync();
 
-        var countQuery = @"
-        SELECT COUNT(*)
-        FROM Employees
-        WHERE
-            @Search IS NULL
-            OR Name LIKE '%' + @Search + '%'
-            OR Email LIKE '%' + @Search + '%'
-            OR Department LIKE '%' + @Search + '%'";
-
-        var countCommand =
+        using var command =
             new SqlCommand(
-                countQuery,
+                "sp_GetEmployees",
                 connection);
 
-        countCommand.Parameters.AddWithValue(
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
             "@Search",
             string.IsNullOrWhiteSpace(search)
                 ? DBNull.Value
                 : search);
 
-        var totalCount =
-            (int)await countCommand.ExecuteScalarAsync();
-
-        var query = $@"
-        SELECT
-            Id,
-            Name,
-            Email,
-            Department
-        FROM Employees
-        WHERE
-            @Search IS NULL
-            OR Name LIKE '%' + @Search + '%'
-            OR Email LIKE '%' + @Search + '%'
-            OR Department LIKE '%' + @Search + '%'
-        ORDER BY
-            {orderByClause}
-            {direction}
-        OFFSET @Offset ROWS
-        FETCH NEXT @PageSize ROWS ONLY";
-
-        var command =
-            new SqlCommand(
-                query,
-                connection);
+        command.Parameters.AddWithValue(
+            "@SortBy",
+            string.IsNullOrWhiteSpace(sortBy)
+                ? DBNull.Value
+                : sortBy);
 
         command.Parameters.AddWithValue(
-        "@Search",
-        string.IsNullOrWhiteSpace(search)
-            ? DBNull.Value
-            : search);
+            "@SortOrder",
+            string.IsNullOrWhiteSpace(sortOrder)
+                ? "asc"
+                : sortOrder);
 
-                command.Parameters.AddWithValue(
-            "@Offset",
-            offset);
+        command.Parameters.AddWithValue(
+            "@Page",
+            page);
 
         command.Parameters.AddWithValue(
             "@PageSize",
@@ -112,15 +69,42 @@ public class EmployeeRepository
         using var reader =
             await command.ExecuteReaderAsync();
 
+        int totalCount = 0;
+
+        if (await reader.ReadAsync())
+        {
+            totalCount =
+                reader.GetInt32(0);
+        }
+
+        await reader.NextResultAsync();
+
         while (await reader.ReadAsync())
         {
-            employees.Add(new Employee
-            {
-                Id = reader.GetInt32(0),
-                Name = reader.GetString(1),
-                Email = reader.GetString(2),
-                Department = reader.GetString(3)
-            });
+            employees.Add(
+                new Employee
+                {
+                    Id =
+                        reader.GetInt32(0),
+
+                    Name =
+                        reader.GetString(1),
+
+                    Email =
+                        reader.GetString(2),
+
+                    DepartmentId =
+                        reader.GetInt32(3),
+
+                    DesignationId =
+                        reader.GetInt32(4),
+
+                    DepartmentName =
+                        reader.GetString(5),
+
+                    DesignationName =
+                        reader.GetString(6)
+                });
         }
 
         return new PagedEmployeeResult
@@ -130,30 +114,23 @@ public class EmployeeRepository
         };
     }
 
-    public async Task<Employee> CreateEmployeeAsync(
+    public async Task<Employee>
+    CreateEmployeeAsync(
         Employee employee)
     {
         using var connection =
-            new SqlConnection(_connectionString);
+            new SqlConnection(
+                _connectionString);
 
         await connection.OpenAsync();
 
-        var command = new SqlCommand(
-            @"
-            INSERT INTO Employees
-            (
-                Name,
-                Email,
-                Department
-            )
-            OUTPUT INSERTED.Id
-            VALUES
-            (
-                @Name,
-                @Email,
-                @Department
-            )",
-            connection);
+        using var command =
+            new SqlCommand(
+                "sp_AddEmployee",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
 
         command.Parameters.AddWithValue(
             "@Name",
@@ -164,78 +141,92 @@ public class EmployeeRepository
             employee.Email);
 
         command.Parameters.AddWithValue(
-            "@Department",
-            employee.Department);
+            "@DepartmentId",
+            employee.DepartmentId);
+
+        command.Parameters.AddWithValue(
+            "@DesignationId",
+            employee.DesignationId);
 
         var id =
-            (int)await command.ExecuteScalarAsync();
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
 
         employee.Id = id;
 
         return employee;
-}
+    }
 
-public async Task<bool> UpdateEmployeeAsync(
-    int id,
-    Employee employee)
-{
-    using var connection =
-        new SqlConnection(_connectionString);
-
-    await connection.OpenAsync();
-
-    var command = new SqlCommand(
-        @"
-        UPDATE Employees
-        SET
-            Name = @Name,
-            Email = @Email,
-            Department = @Department
-        WHERE Id = @Id",
-        connection);
-
-    command.Parameters.AddWithValue(
-        "@Id",
-        id);
-
-    command.Parameters.AddWithValue(
-        "@Name",
-        employee.Name);
-
-    command.Parameters.AddWithValue(
-        "@Email",
-        employee.Email);
-
-    command.Parameters.AddWithValue(
-        "@Department",
-        employee.Department);
-
-    var rowsAffected =
-        await command.ExecuteNonQueryAsync();
-
-    return rowsAffected > 0;
-}
-
-public async Task<bool> DeleteEmployeeAsync(
-        int id)
-{
+    public async Task<bool>
+    UpdateEmployeeAsync(
+        int id,
+        Employee employee)
+    {
         using var connection =
-            new SqlConnection(_connectionString);
+            new SqlConnection(
+                _connectionString);
 
         await connection.OpenAsync();
 
-        var command = new SqlCommand(
-            @"
-            DELETE FROM Employees
-            WHERE Id = @Id",
-            connection);
+        using var command =
+            new SqlCommand(
+                "sp_UpdateEmployee",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@Id",
+            id);
+
+        command.Parameters.AddWithValue(
+            "@Name",
+            employee.Name);
+
+        command.Parameters.AddWithValue(
+            "@Email",
+            employee.Email);
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            employee.DepartmentId);
+
+        command.Parameters.AddWithValue(
+            "@DesignationId",
+            employee.DesignationId);
+
+        var rowsAffected =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return rowsAffected > 0;
+    }
+    public async Task<bool>
+    DeleteEmployeeAsync(
+        int id)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_DeleteEmployee",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
 
         command.Parameters.AddWithValue(
             "@Id",
             id);
 
         var rowsAffected =
-            await command.ExecuteNonQueryAsync();
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
 
         return rowsAffected > 0;
     }

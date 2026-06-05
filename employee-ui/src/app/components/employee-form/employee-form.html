@@ -128,61 +128,170 @@
 
     </div>
 
-    <div class="form-group">
+    <div class="dual-dropdown-row">
 
-      <label>Department:</label>
+      <div class="form-group half-width">
 
-      <input
-        type="text"
-        name="department"
-        maxlength="100"
-        placeholder="Enter employee department"
-        [(ngModel)]="department"
-        pattern="^[a-zA-Z\s]+$"
-        required
-        minlength="2"
-        #departmentField="ngModel"
-      />
+        <label>
 
-      <div class="error-container">
+          Department:
 
-        @if (
-          departmentField.invalid &&
-          departmentField.touched
+        </label>
+
+        <div class="custom-dropdown">
+
+          <button
+            type="button"
+            class="dropdown-btn"
+            (click)="
+                $event.stopPropagation();
+                showDepartmentDropdown =
+                !showDepartmentDropdown">
+
+            <span>
+
+              {{ selectedDepartmentName }}
+
+            </span>
+
+            <span>
+
+              ▼
+
+            </span>
+
+          </button>
+
+          @if (showDepartmentDropdown) {
+
+            <div class="dropdown-menu">
+
+              @for (
+                department of departments;
+                track department.departmentId
+              ) {
+
+                <div
+                  class="dropdown-item"
+                  (click)="
+                    selectDepartment(
+                      department
+                    )">
+
+                  {{ department.departmentName }}
+
+                </div>
+
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+       @if (
+          departmentTouched &&
+          departmentId === 0
         ) {
 
-          <div class="error">
+          <small class="error">
 
-            @if (
-              departmentField.errors?.['required']
-            ) {
-              Department is required
-            }
+            Please select a department
 
-            @if (
-              departmentField.errors?.['minlength']
-            ) {
-              Department must be at least 2 characters
-            }
-
-            @if (
-              departmentField.errors?.['maxlength']
-            ) {
-              Department cannot exceed 100 characters
-            }
-
-          </div>
+          </small>
 
         }
 
       </div>
+
+      <div class="form-group half-width">
+
+        <label>
+
+          Designation:
+
+        </label>
+
+        <div class="custom-dropdown">
+
+          <button
+            type="button"
+            class="dropdown-btn"
+            [disabled]="!departmentId"
+            (click)="
+              $event.stopPropagation();
+              showDesignationDropdown =
+              !showDesignationDropdown">
+
+            <span>
+
+              {{ selectedDesignationName }}
+
+            </span>
+
+            <span>
+
+              ▼
+
+            </span>
+
+          </button>
+
+          @if (showDesignationDropdown) {
+
+            <div class="dropdown-menu">
+
+              @for (
+                designation of designations;
+                track designation.designationId
+              ) {
+
+                <div
+                  class="dropdown-item"
+                  (click)="
+                    selectDesignation(
+                      designation
+                    )">
+
+                  {{ designation.designationName }}
+
+                </div>
+
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+       @if (
+          departmentId > 0 &&
+          designationId === 0
+        ) {
+
+          <small class="error">
+
+            Please select a designation
+
+          </small>
+
+        }
+
+      </div>
+
     </div>
 
     <div class="form-actions">
 
       <button
         type="submit"
-        [disabled]="employeeForm.invalid">
+        [disabled]="
+          employeeForm.invalid ||
+          departmentId === 0 ||
+          designationId === 0
+        ">
 
         @if (editingEmployeeId !== null) {
 

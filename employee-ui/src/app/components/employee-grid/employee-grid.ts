@@ -165,9 +165,13 @@ export class EmployeeGrid implements OnInit {
     },
 
     {
-      field: 'department',
+      field: 'departmentName',
       headerName: 'Department'
     },
+    {
+    field: 'designationName',
+    headerName: 'Designation'
+  },
 
   {
     headerName: 'Actions',
@@ -321,7 +325,8 @@ export class EmployeeGrid implements OnInit {
         'id',
         'name',
         'email',
-        'department'
+        'departmentName',
+        'designationName'
 
       ]
 

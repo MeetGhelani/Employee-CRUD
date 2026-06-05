@@ -8,6 +8,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<EmployeeRepository>();
 builder.Services.AddScoped<EmployeeService>();
 
+builder.Services.AddScoped<
+    DepartmentRepository>();
+
+builder.Services.AddScoped<
+    DepartmentService>();
+
+builder.Services.AddScoped<
+    DesignationRepository>();
+
+builder.Services.AddScoped<
+    DesignationService>();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -5,9 +5,29 @@ import { ChangeDetectorRef } from '@angular/core';
 import { EmployeeService } from '../../services/employee';
 import { ToastService } from '../../services/toast';
 
+import { HostListener }
+from '@angular/core';
+
+import { CommonModule }
+from '@angular/common';
+
+import { Department }
+from '../../models/department';
+
+import { Designation }
+from '../../models/designation';
+
+import { DepartmentService }
+from '../../services/department';
+
+import { DesignationService }
+from '../../services/designation';
+
 @Component({
   selector: 'app-employee-form',
-  imports: [FormsModule],
+  imports: [FormsModule,
+    CommonModule
+  ],
   templateUrl: './employee-form.html',
   styleUrl: './employee-form.css'
 })
@@ -15,19 +35,42 @@ export class EmployeeForm {
 
   name = '';
   email = '';
-  department = '';
+  departmentId = 0;
+
+  designationId = 0;
+
+  departments: Department[] = [];
+
+  designations: Designation[] = [];
+
+   showDepartmentDropdown = false;
+
+  showDesignationDropdown = false;
+
+  departmentTouched = false;
 
   editingEmployeeId:
     number | null = null;
 
   duplicateEmailError = '';
-  
 
+  @HostListener('document:click')
+    closeDropdowns() {
+
+      this.showDepartmentDropdown =
+        false;
+
+      this.showDesignationDropdown =
+        false;
+
+    }
+  
   constructor(
     private employeeService: EmployeeService,
+    private departmentService: DepartmentService,
+    private designationService: DesignationService,
     private cdr: ChangeDetectorRef,
     private toastService: ToastService
-
   ) {
 
     effect(() => {
@@ -40,28 +83,39 @@ export class EmployeeForm {
 
       untracked(() => {
 
-        if (employee) {
+     if (employee) {
 
-          this.editingEmployeeId =
-            employee.id;
+        this.editingEmployeeId =
+          employee.id;
 
-          this.name =
-            employee.name;
+        this.name =
+          employee.name;
 
-          this.email =
-            employee.email;
+        this.email =
+          employee.email;
 
-          this.department =
-            employee.department;
+        this.departmentId =
+          employee.departmentId;
 
-        }
+        this.designationId =
+          employee.designationId;
+
+        this.loadDesignations(
+          employee.departmentId
+        );
+
+      }
         else {
 
           this.editingEmployeeId = null;
 
           this.email = '';
 
-          this.department = '';
+          this.departmentId = 0;
+
+          this.designationId = 0;
+
+          this.designations = [];
 
         }
 
@@ -73,6 +127,143 @@ export class EmployeeForm {
 
   });
 
+    this.loadDepartments();
+
+  }
+
+  loadDepartments() {
+
+    this.departmentService
+      .getDepartments()
+      .subscribe({
+
+        next: (data) => {
+
+          this.departments = data;
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error loading departments',
+            error
+          );
+
+        }
+
+      });
+
+  }
+
+  loadDesignations(
+    departmentId: number
+  ) {
+
+    if (!departmentId) {
+
+      this.designations = [];
+
+      this.designationId = 0;
+
+      return;
+
+    }
+
+    this.designationService
+      .getDesignationsByDepartment(
+        departmentId
+      )
+      .subscribe({
+
+        next: (data) => {
+
+          this.designations = data;
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error loading designations',
+            error
+          );
+
+        }
+
+      });
+
+  }
+  onDepartmentChange() {
+
+    this.designationId = 0;
+
+    this.showDesignationDropdown = false;
+
+    this.loadDesignations(
+      this.departmentId
+    );
+
+  }
+
+  get selectedDepartmentName(): string {  
+
+    return this.departments.find(
+
+      department =>
+
+        department.departmentId ===
+
+        this.departmentId
+
+    )?.departmentName
+
+    ?? 'Select Department';
+
+  }
+
+  get selectedDesignationName(): string {
+
+    return this.designations.find(
+
+      designation =>
+
+        designation.designationId ===
+
+        this.designationId
+
+    )?.designationName
+
+    ?? 'Select Designation';
+
+  }
+
+  selectDepartment(
+    department: Department
+  ) {
+
+    this.departmentTouched = true;
+
+    this.departmentId =
+      department.departmentId;
+
+    this.showDepartmentDropdown =
+      false;
+
+    this.onDepartmentChange();
+
+  }
+
+  selectDesignation(
+    designation: Designation
+  ) {
+
+    this.designationId =
+      designation.designationId;
+
+    this.showDesignationDropdown =
+      false;
+
   }
 
   saveEmployee(form: NgForm) {
@@ -82,8 +273,14 @@ export class EmployeeForm {
     const employeeData = {
 
       name: this.name,
+
       email: this.email,
-      department: this.department
+
+      departmentId:
+        this.departmentId,
+
+      designationId:
+        this.designationId
 
     };
 
@@ -107,6 +304,12 @@ export class EmployeeForm {
               .set(null);
 
             form.resetForm();
+
+            this.departmentId = 0;
+
+            this.designationId = 0;
+
+            this.designations = [];
 
             this.employeeService
               .notifyEmployeeUpdated();
@@ -151,6 +354,12 @@ export class EmployeeForm {
 
             form.resetForm();
 
+            this.departmentId = 0;
+
+            this.designationId = 0;
+
+            this.designations = [];
+
             this.employeeService
               .notifyEmployeeUpdated();
 
@@ -191,10 +400,13 @@ export class EmployeeForm {
 
     this.email = '';
 
-    this.department = '';
+    this.departmentId = 0;
+
+    this.designationId = 0;
+
+    this.designations = [];
 
     this.duplicateEmailError = '';
-
 
     this.employeeService
       .selectedEmployee
