@@ -1,21 +1,64 @@
 <div class="designation-master-card">
 
-    <h3>
+  <h3>
 
     Designation Master
 
     <span class="count-badge">
 
-        {{ designations.length }}
+      {{ filteredDesignations.length }}
 
     </span>
 
-    </h3>
+  </h3>
+
+  @if (
+  !isAddMode &&
+  !isEditMode &&
+  !isDeleteMode
+) {
+
+
+  <div class="filter-row">
+
+    <select
+  [(ngModel)]="selectedDepartmentId">
+
+  <option [ngValue]="0">
+
+    All Departments
+
+  </option>
+
+  @for (
+    department of departments;
+    track department.departmentId
+  ) {
+
+    <option
+      [ngValue]="
+        department.departmentId
+      ">
+
+      {{ department.departmentName }}
+
+    </option>
+
+  }
+
+</select>
+
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      placeholder="Search designation..." />
+
+  </div>
 
   <div class="designation-list">
 
     @for (
-      designation of designations;
+      designation of filteredDesignations;
       track designation.designationId
     ) {
 
@@ -53,12 +96,120 @@
 
   </div>
 
-  <button
-    type="button"
-    class="add-btn">
+    @if (isAddMode) {
 
-    + Add Designation
+    <div class="master-form">
 
-  </button>
+      <h3>
+
+        Add Designation
+
+      </h3>
+
+      <label>
+
+        Department
+
+      </label>
+
+      <div class="custom-dropdown">
+
+        <button
+          type="button"
+          class="dropdown-btn"
+          (click)="
+            showDepartmentDropdown =
+            !showDepartmentDropdown">
+
+          <span>
+
+            {{ selectedDepartmentName }}
+
+          </span>
+
+          <span>
+
+            ▼
+
+          </span>
+
+        </button>
+
+        @if (
+          showDepartmentDropdown
+        ) {
+
+          <div class="dropdown-menu">
+
+            @for (
+              department of departments;
+              track department.departmentId
+            ) {
+
+              <div
+                class="dropdown-item"
+                (click)="
+                  selectDepartment(
+                    department
+                  )">
+
+                {{ department.departmentName }}
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+      <input
+        type="text"
+        maxlength="100"
+        [(ngModel)]="designationName"
+        placeholder="Enter designation name" />
+
+      <div class="error-space">
+
+        {{ designationError }}
+
+      </div>
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="save-btn">
+
+          Save
+
+        </button>
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancelForm()">
+
+          Cancel
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+}
+
+ <button
+  type="button"
+  class="add-btn"
+  (click)="showAddForm()">
+
+  + Add Designation
+
+</button>
 
 </div>

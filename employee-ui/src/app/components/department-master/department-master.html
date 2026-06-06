@@ -12,20 +12,20 @@
 
   </h3>
 
-  <div class="search-container">
-
-    <input
-      type="text"
-      [(ngModel)]="searchText"
-      placeholder="🔍 Search department..." />
-
-  </div>
-
   @if (
     !isAddMode &&
     !isEditMode &&
     !isDeleteMode
   ) {
+
+    <div class="search-container">
+
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        placeholder="🔍 Search department..." />
+
+  </div>
 
     <div class="department-list">
 
