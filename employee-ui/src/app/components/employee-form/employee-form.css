@@ -14,15 +14,18 @@ h2{
     text-align: center;
     margin-bottom: 15px;
 }
-.employee-form{
+
+.employee-form {
+
     position: relative;
+
     padding: 18px;
+
     border-radius: 5px;
-    max-width: 400px;
-    margin: 0 auto;
 
-   background: #3b3b3b;
+    width: 100%;
 
+    background: #3b3b3b;
 
 }
 

@@ -1,0 +1,249 @@
+<div class="department-master-card">
+
+  <h3>
+
+    Department Master
+
+    <span class="count-badge">
+
+      {{ departments.length }}
+
+    </span>
+
+  </h3>
+
+  <div class="search-container">
+
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      placeholder="🔍 Search department..." />
+
+  </div>
+
+  @if (
+    !isAddMode &&
+    !isEditMode &&
+    !isDeleteMode
+  ) {
+
+    <div class="department-list">
+
+      @for (
+        department of filteredDepartments;
+        track department.departmentId
+      ) {
+
+        <div class="department-row">
+
+          <span>
+
+            {{ department.departmentName }}
+
+          </span>
+
+          <div class="actions">
+
+            <button
+              type="button"
+              class="edit-btn"
+              (click)="
+                showEditForm(
+                  department
+                )">
+
+              Edit
+
+            </button>
+
+         <button
+          type="button"
+          class="delete-btn"
+          (click)="
+            showDeleteConfirmation(
+              department
+            )">
+
+          Delete
+
+        </button>
+
+          </div>
+
+        </div>
+
+      }
+
+    
+
+    </div>
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="showAddForm()">
+
+      + Add Department
+
+    </button>
+
+  }
+
+ @if (isAddMode) {
+
+    <div class="master-form">
+
+      <h3>
+
+        Add Department
+
+      </h3>
+
+      <input
+        type="text"
+        maxlength="100"
+        [(ngModel)]="departmentName"
+        (input)="clearDepartmentError()"
+        placeholder="Enter department name" />
+
+      <div class="error-space">
+
+        {{ departmentError }}
+
+      </div>
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="save-btn"
+          (click)="saveDepartment()">
+
+          Save
+
+        </button>
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancelForm()">
+
+          Cancel
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+  @if (isEditMode) {
+
+    <div class="master-form">
+
+      <h3>
+
+        Edit Department
+
+      </h3>
+
+      <input
+        type="text"
+        maxlength="100"
+        [(ngModel)]="departmentName"
+        (input)="clearDepartmentError()"
+        placeholder="Enter department name" />
+
+    <div class="error-space">
+
+      {{ departmentError }}
+
+    </div>
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="save-btn"
+          (click)="updateDepartment()">
+
+          Update
+
+        </button>
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancelForm()">
+
+          Cancel
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+  @if (isDeleteMode) {
+
+    <div class="master-form">
+
+      <h3>
+
+        Delete Department
+
+      </h3>
+
+      <label>
+
+        Department Name
+
+      </label>
+
+      <input
+        type="text"
+        [value]="deletingDepartmentName"
+        disabled />
+
+      <div class="delete-warning">
+
+        This department will be deactivated.
+
+      </div>
+
+      <div class="error-space">
+
+        {{ departmentError }}
+
+      </div>
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="danger-btn"
+          (click)="deleteDepartment()">
+
+          Delete
+
+        </button>
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancelForm()">
+
+          Cancel
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

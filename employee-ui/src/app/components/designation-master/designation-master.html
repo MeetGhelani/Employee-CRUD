@@ -1,0 +1,64 @@
+<div class="designation-master-card">
+
+    <h3>
+
+    Designation Master
+
+    <span class="count-badge">
+
+        {{ designations.length }}
+
+    </span>
+
+    </h3>
+
+  <div class="designation-list">
+
+    @for (
+      designation of designations;
+      track designation.designationId
+    ) {
+
+      <div class="designation-row">
+
+        <span>
+
+          {{ designation.designationName }}
+
+        </span>
+
+        <div class="actions">
+
+          <button
+            type="button"
+            class="edit-btn">
+
+            Edit
+
+          </button>
+
+          <button
+            type="button"
+            class="delete-btn">
+
+            Delete
+
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+
+  <button
+    type="button"
+    class="add-btn">
+
+    + Add Designation
+
+  </button>
+
+</div>

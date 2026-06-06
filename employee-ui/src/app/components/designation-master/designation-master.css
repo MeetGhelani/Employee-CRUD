@@ -1,0 +1,266 @@
+.designation-master-card {
+
+  position: relative;
+
+  padding: 18px;
+
+  border-radius: 5px;
+
+  background: #3b3b3b;
+
+  height: 350px;
+
+  display: flex;
+
+  flex-direction: column;
+
+}
+
+.designation-master-card h3 {
+
+  color: white;
+
+  margin-bottom: 15px;
+}
+
+.designation-master-card::before {
+
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+
+  left: 0;
+
+  right: 0;
+
+  height: 4px;
+
+  background: #00c27a;
+
+  border-radius: 16px 16px 0 0;
+  
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow:
+    0 10px 30px rgba(211, 211, 211, 0.25);
+
+}
+
+.designation-master-card h3 {
+
+  text-align: center;
+
+  color: white;
+
+  margin-bottom: 15px;
+
+}
+
+.count-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 30px;
+
+  height: 30px;
+
+  margin-left: 8px;
+
+  padding: 0 8px;
+
+  border-radius: 255px;
+
+  background: #28a745;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+}
+
+.designation-list {
+
+  max-height: 350px;
+
+  overflow-y: auto;
+
+  padding-right: 10px;
+
+}
+
+.designation-row {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  min-height: 45px;
+
+  padding: 8px 0;
+
+  border-bottom:
+    1px solid rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+}
+
+.designation-row span {
+
+  display: flex;
+
+  align-items: center;
+
+  height: 100%;
+
+}
+
+
+.actions {
+
+  display: flex;
+
+  gap: 8px;
+
+}
+
+.actions button {
+
+  padding: 6px 12px;
+
+  border: none;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+}
+
+.actions button {
+
+  padding: 6px 12px;
+
+  border: none;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+}
+
+.edit-btn {
+
+  background: #41a5be;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 8px;
+
+  padding: 6px 12px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+}
+
+.edit-btn:hover {
+
+  background: #418ea1;
+
+}
+
+.delete-btn {
+
+  background: transparent;
+
+  color: #ff7272;
+
+  border: 1px solid #ff7272;
+
+  border-radius: 8px;
+
+  padding: 6px 12px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+}
+
+.delete-btn:hover {
+
+  background: rgba(255,114,114,.15);
+
+}
+
+.add-btn {
+
+  width: 100%;
+
+  margin-top: 15px;
+
+  padding: 10px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #28a745;
+
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+}
+
+.add-btn:hover {
+
+  background: #218838;
+
+}
+
+
+.department-list::-webkit-scrollbar,
+.designation-list::-webkit-scrollbar {
+
+  width: 8px;
+
+}
+
+.department-list::-webkit-scrollbar-track,
+.designation-list::-webkit-scrollbar-track {
+
+  background: #2c2c2c;
+
+}
+
+.department-list::-webkit-scrollbar-thumb,
+.designation-list::-webkit-scrollbar-thumb {
+
+  background: #00c27a;
+
+  border-radius: 10px;
+
+}
