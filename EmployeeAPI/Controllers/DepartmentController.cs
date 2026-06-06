@@ -31,9 +31,45 @@ public class DepartmentsController
 
     [HttpPost]
     public async Task<IActionResult>
+
+    
     CreateDepartment(
         CreateDepartmentDto dto)
     {
+
+        dto.DepartmentName =
+        dto.DepartmentName.Trim();
+
+      var status =
+            await _service
+                .GetDepartmentStatusAsync(
+                    dto.DepartmentName);
+
+        if (status == 1)
+        {
+            return Conflict(
+                new
+                {
+                    message =
+                        "Department already exists."
+                });
+        }
+
+        if (status == 2)
+        {
+            await _service
+                .ReactivateDepartmentAsync(
+                    dto.DepartmentName);
+
+            return Ok(
+                new
+                {
+                    message =
+                        "Department reactivated successfully."
+                });
+        }
+
+
         var departmentId =
             await _service
                 .AddDepartmentAsync(
@@ -53,6 +89,39 @@ public class DepartmentsController
         int id,
         UpdateDepartmentDto dto)
     {
+
+        dto.DepartmentName =
+        dto.DepartmentName.Trim();
+        
+        var status =
+            await _service
+                .GetDepartmentStatusAsync(
+                    dto.DepartmentName);
+
+        if (status == 1)
+        {
+            return Conflict(
+                new
+                {
+                    message =
+                        "Department already exists."
+                });
+        }
+
+        if (status == 2)
+        {
+            await _service
+                .ReactivateDepartmentAsync(
+                    dto.DepartmentName);
+
+            return Ok(
+                new
+                {
+                    message =
+                        "Department reactivated successfully."
+                });
+        }
+
         var updated =
             await _service
                 .UpdateDepartmentAsync(
@@ -69,13 +138,24 @@ public class DepartmentsController
 
     [HttpDelete("{id}")]
     public async Task<IActionResult>
-    DeleteDepartment(
-        int id)
+    DeleteDepartment(int id)
     {
+        var hasEmployees =
+            await _service
+                .DepartmentHasEmployeesAsync(id);
+
+        if (hasEmployees)
+        {
+            return Conflict(new
+            {
+                message =
+                    "Department cannot be deleted because employees are assigned to it."
+            });
+        }
+
         var deleted =
             await _service
-                .DeleteDepartmentAsync(
-                    id);
+                .DeleteDepartmentAsync(id);
 
         if (!deleted)
         {
@@ -84,4 +164,6 @@ public class DepartmentsController
 
         return NoContent();
     }
+
+
 }

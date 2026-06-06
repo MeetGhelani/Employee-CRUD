@@ -2,9 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EmployeeAPI.DTOs;
 
-public class UpdateDepartmentDto
+public class CreateDesignationDto
 {
-   private string _departmentName = string.Empty;
+    [Required]
+    public int DepartmentId { get; set; }
+
+   private string _designationName = string.Empty;
 
     [Required]
     [StringLength(100, MinimumLength = 2)]
@@ -12,10 +15,10 @@ public class UpdateDepartmentDto
         @"^(?=.*[A-Za-z])[A-Za-z0-9]+(?:\s[A-Za-z0-9]+)*$",
         ErrorMessage =
         "Must contain at least one letter and can contain only letters, numbers and spaces.")]
-    public string DepartmentName
+    public string DesignationName
     {
-        get => _departmentName;
+        get => _designationName ;
 
-        set => _departmentName = value?.Trim() ?? string.Empty;
+        set => _designationName = value?.Trim() ?? string.Empty;
     }
 }

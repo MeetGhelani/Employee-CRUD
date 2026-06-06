@@ -7,13 +7,16 @@ import { Observable } from 'rxjs';
 import { Department }
 from '../models/department';
 
+import { environment }
+from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class DepartmentService {
 
-  private apiUrl =
-    'http://localhost:5279/api/departments';
+private apiUrl =
+  `${environment.apiUrl}/departments`;
 
   constructor(
     private http: HttpClient
@@ -24,6 +27,43 @@ export class DepartmentService {
 
     return this.http.get<Department[]>(
       this.apiUrl
+    );
+
+  }
+
+  addDepartment(
+    departmentName: string
+  ): Observable<any> {
+
+    return this.http.post(
+      this.apiUrl,
+      {
+        departmentName
+      }
+    );
+
+  }
+
+  updateDepartment(
+    departmentId: number,
+    departmentName: string
+  ): Observable<any> {
+
+    return this.http.put(
+      `${this.apiUrl}/${departmentId}`,
+      {
+        departmentName
+      }
+    );
+
+  }
+
+  deleteDepartment(
+    departmentId: number
+  ): Observable<any> {
+
+    return this.http.delete(
+      `${this.apiUrl}/${departmentId}`
     );
 
   }

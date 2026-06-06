@@ -50,4 +50,51 @@ public class DepartmentService
             .DeleteDepartmentAsync(
                 departmentId);
     }
+
+    public async Task<bool>
+    DepartmentHasEmployeesAsync(
+        int departmentId)
+    {
+        return await _repository
+            .DepartmentHasEmployeesAsync(
+                departmentId);
+    }
+
+    public async Task<bool>
+    DepartmentExistsAsync(
+        string departmentName)
+    {
+        return await _repository
+            .DepartmentExistsAsync(
+                departmentName);
+    }
+
+    public async Task<bool>
+    DepartmentExistsForOtherDepartmentAsync(
+        int departmentId,
+        string departmentName)
+    {
+        return await _repository
+            .DepartmentExistsForOtherDepartmentAsync(
+                departmentId,
+                departmentName);
+    }
+
+    public async Task<int>
+    GetDepartmentStatusAsync(
+        string departmentName)
+    {
+        return await _repository
+            .GetDepartmentStatusAsync(
+                departmentName);
+    }
+
+    public async Task<bool>
+    ReactivateDepartmentAsync(
+        string departmentName)
+    {
+        return await _repository
+            .ReactivateDepartmentAsync(
+                departmentName);
+    }
 }

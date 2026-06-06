@@ -148,4 +148,279 @@ public class DesignationRepository
 
         return count > 0;
     }
+
+    public async Task<int>
+    AddDesignationAsync(
+        int departmentId,
+        string designationName)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_AddDesignation",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            departmentId);
+
+        command.Parameters.AddWithValue(
+            "@DesignationName",
+            designationName);
+
+        return Convert.ToInt32(
+            await command.ExecuteScalarAsync());
+    }
+
+    public async Task<bool>
+    UpdateDesignationAsync(
+        int designationId,
+        int departmentId,
+        string designationName)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_UpdateDesignation",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DesignationId",
+            designationId);
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            departmentId);
+
+        command.Parameters.AddWithValue(
+            "@DesignationName",
+            designationName);
+
+        var rowsAffected =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return rowsAffected > 0;
+    }
+
+    public async Task<bool>
+    DeleteDesignationAsync(
+        int designationId)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_DeleteDesignation",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DesignationId",
+            designationId);
+
+        var rowsAffected =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return rowsAffected > 0;
+    }
+
+    public async Task<bool>
+    DesignationExistsAsync(
+        int departmentId,
+        string designationName)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_DesignationExists",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            departmentId);
+
+        command.Parameters.AddWithValue(
+            "@DesignationName",
+            designationName);
+
+        var count =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return count > 0;
+    }
+
+    public async Task<bool>
+    DesignationExistsForOtherDesignationAsync(
+        int designationId,
+        int departmentId,
+        string designationName)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_DesignationExistsForOtherDesignation",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DesignationId",
+            designationId);
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            departmentId);
+
+        command.Parameters.AddWithValue(
+            "@DesignationName",
+            designationName);
+
+        var count =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return count > 0;
+    }
+
+    public async Task<bool>
+    DesignationHasEmployeesAsync(
+        int designationId)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_DesignationHasEmployees",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DesignationId",
+            designationId);
+
+        var count =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return count > 0;
+    }
+
+    public async Task<int>
+    GetDesignationStatusAsync(
+        int departmentId,
+        string designationName)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_GetDesignationStatus",
+                connection);
+
+        command.CommandType =
+            CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            departmentId);
+
+        command.Parameters.AddWithValue(
+            "@DesignationName",
+            designationName);
+
+        var result =
+            await command.ExecuteScalarAsync();
+
+        if (result == null)
+        {
+            return 0;
+        }
+
+        return Convert.ToInt32(result);
+    }
+
+    public async Task<bool>
+    ReactivateDesignationAsync(
+        int departmentId,
+        string designationName)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_ReactivateDesignation",
+                connection);
+
+        command.CommandType =
+            CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            departmentId);
+
+        command.Parameters.AddWithValue(
+            "@DesignationName",
+            designationName);
+
+        var rowsAffected =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return rowsAffected > 0;
+    }
+
+    
 }

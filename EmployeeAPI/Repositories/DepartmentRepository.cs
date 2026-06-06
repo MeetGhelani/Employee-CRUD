@@ -148,4 +148,158 @@ public class DepartmentRepository
 
         return rowsAffected > 0;
     }
+
+    public async Task<bool>
+    DepartmentHasEmployeesAsync(
+        int departmentId)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_DepartmentHasEmployees",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            departmentId);
+
+        var count =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return count > 0;
+    }
+
+    public async Task<bool>
+    DepartmentExistsAsync(
+        string departmentName)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_DepartmentExists",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentName",
+            departmentName);
+
+        var count =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return count > 0;
+    }
+
+    public async Task<bool>
+    DepartmentExistsForOtherDepartmentAsync(
+        int departmentId,
+        string departmentName)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_DepartmentExistsForOtherDepartment",
+                connection);
+
+        command.CommandType =
+            System.Data.CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            departmentId);
+
+        command.Parameters.AddWithValue(
+            "@DepartmentName",
+            departmentName);
+
+        var count =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return count > 0;
+    }
+
+    public async Task<int>
+    GetDepartmentStatusAsync(
+        string departmentName)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_GetDepartmentStatus",
+                connection);
+
+        command.CommandType =
+            CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentName",
+            departmentName);
+
+        var result =
+            await command.ExecuteScalarAsync();
+
+        if (result == null)
+        {
+            return 0;
+        }
+
+        return Convert.ToInt32(result);
+    }
+
+    public async Task<bool>
+    ReactivateDepartmentAsync(
+        string departmentName)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_ReactivateDepartment",
+                connection);
+
+        command.CommandType =
+            CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentName",
+            departmentName);
+
+        var rowsAffected =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return rowsAffected > 0;
+    }
 }
