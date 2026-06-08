@@ -276,25 +276,43 @@
 
 }
 
+.empty-state {
+
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #a1a1aa;
+
+  font-size: 14px;
+
+  text-align: center;
+
+}
+
 /* ===========================
    BUTTONS
 =========================== */
 
 .edit-btn {
 
+  border: none;
+
+  padding: 8px 14px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
   background: #41a5be;
 
   color: white;
 
-  border: none;
-
-  border-radius: 8px;
-
-  padding: 6px 12px;
-
-  font-size: 13px;
-
-  cursor: pointer;
+  font-weight: 600;
 
   transition: 0.2s;
 
@@ -302,25 +320,27 @@
 
 .edit-btn:hover {
 
+  transform: translateY(-1px);
+
   background: #418ea1;
 
 }
 
 .delete-btn {
 
-  background: transparent;
+  border: none;
 
-  color: #ff7272;
-
-  border: 1px solid #ff7272;
+  padding: 8px 14px;
 
   border-radius: 8px;
 
-  padding: 6px 12px;
-
-  font-size: 13px;
-
   cursor: pointer;
+
+  background: #d5545f;
+
+  color: white;
+
+  font-weight: 600;
 
   transition: 0.2s;
 
@@ -328,7 +348,7 @@
 
 .delete-btn:hover {
 
-  background: rgba(255,114,114,.15);
+  transform: translateY(-1px);
 
 }
 
@@ -456,8 +476,6 @@
 
 .master-form input {
 
-  width: 100%;
-
   height: 38px;
 
   padding: 0 12px;
@@ -487,7 +505,7 @@
 
 .error-space {
 
-  min-height: 20px;
+  min-height: 36px;
 
   display: flex;
 
@@ -507,7 +525,73 @@
 
   width: 100%;
 
+  margin-top: auto;
+
 }
+
+
+/* ===========================
+   Delete modal
+=========================== */
+
+.delete-warning {
+
+  color: #ff2b1c;
+
+  font-size: 13px;
+
+  text-align: center;
+
+  background: rgba(53, 4, 0, 0.678);
+
+  border: 1px solid rgba(255, 229, 227, 0.25);
+
+  border-radius: 558px;
+
+  padding: 8px 12px;
+
+  letter-spacing: 0.5px;
+
+}
+
+.danger-btn {
+
+  flex: 1;
+
+  padding: 10px;
+
+  background: #ff7272;
+
+  color: #ffffff;
+
+  border: 1px solid #ff7272;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  width: 30%;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  transition: all 0.2s ease-in-out;
+
+}
+
+.danger-btn:hover {
+
+  background: rgba(196, 0, 0, 0.35);
+
+  border-color: #ff7272;
+
+  color: white;
+
+  transform: translateY(-1px);
+
+}
+
 
 /* ===========================
    SCROLLBARS

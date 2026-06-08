@@ -97,4 +97,13 @@ public class DepartmentService
             .ReactivateDepartmentAsync(
                 departmentName);
     }
+
+    public async Task<bool>
+    IsDepartmentActiveAsync(
+        int departmentId)
+    {
+        return await _repository
+            .IsDepartmentActiveAsync(
+                departmentId);
+    }
 }

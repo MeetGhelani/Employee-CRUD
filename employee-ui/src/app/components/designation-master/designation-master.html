@@ -21,74 +21,130 @@
 
   <div class="filter-row">
 
-    <select
-  [(ngModel)]="selectedDepartmentId">
+    <div class="custom-dropdown">
 
-  <option [ngValue]="0">
+      <button
+        type="button"
+        class="dropdown-btn"
+       (click)="
+          $event.stopPropagation();
+          showFilterDepartmentDropdown =
+          !showFilterDepartmentDropdown">
 
-    All Departments
+        <span>
 
-  </option>
+          {{ selectedFilterDepartmentName }}
 
-  @for (
-    department of departments;
-    track department.departmentId
-  ) {
+        </span>
 
-    <option
-      [ngValue]="
-        department.departmentId
-      ">
+        <span>▼</span>
 
-      {{ department.departmentName }}
+      </button>
 
-    </option>
+      @if (
+        showFilterDepartmentDropdown
+      ) {
 
-  }
+        <div class="dropdown-menu">
 
-</select>
+          <div
+            class="dropdown-item"
+            (click)="
+              $event.stopPropagation();
+              selectFilterDepartment(0, 'All Departments')">
+
+            All Departments
+
+          </div>
+
+          @for (
+            department of departments;
+            track department.departmentId
+          ) {
+
+            <div
+              class="dropdown-item"
+              (click)="
+                selectFilterDepartment(
+                  department.departmentId,
+                  department.departmentName
+                )">
+
+              {{ department.departmentName }}
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
 
     <input
       type="text"
       [(ngModel)]="searchText"
-      placeholder="Search designation..." />
+      placeholder="🔍 Search designation..." />
 
   </div>
 
   <div class="designation-list">
 
-    @for (
-      designation of filteredDesignations;
-      track designation.designationId
+    @if (
+      filteredDesignations.length > 0
     ) {
 
-      <div class="designation-row">
+      @for (
+        designation of filteredDesignations;
+        track designation.designationId
+      ) {
 
-        <span>
+        <div class="designation-row">
 
-          {{ designation.designationName }}
+          <span>
 
-        </span>
+            {{ designation.designationName }}
 
-        <div class="actions">
+          </span>
 
-          <button
-            type="button"
-            class="edit-btn">
+          <div class="actions">
 
-            Edit
+            <button
+              type="button"
+              class="edit-btn"
+              (click)="
+                showEditForm(
+                  designation
+                )">
 
-          </button>
+              Edit
 
-          <button
-            type="button"
-            class="delete-btn">
+            </button>
 
-            Delete
+            <button
+              type="button"
+              class="delete-btn"
+              (click)="
+                showDeleteConfirmation(
+                  designation
+                )">
 
-          </button>
+              Delete
+
+            </button>
+
+          </div>
 
         </div>
+
+      }
+
+    } @else {
+
+      <div class="empty-state">
+
+        No designations found
 
       </div>
 
@@ -96,9 +152,20 @@
 
   </div>
 
-    @if (isAddMode) {
+   <button
+    type="button"
+    class="add-btn"
+    (click)="showAddForm()">
 
-    <div class="master-form">
+    + Add Designation
+
+  </button>
+
+}
+
+@if (isAddMode) {
+
+  <div class="master-form">
 
       <h3>
 
@@ -117,7 +184,118 @@
         <button
           type="button"
           class="dropdown-btn"
+         (click)="
+          $event.stopPropagation();
+          showDepartmentDropdown =
+          !showDepartmentDropdown">
+
+          <span>
+
+            {{ selectedDepartmentName }}
+
+          </span>
+
+          <span>
+
+            ▼
+
+          </span>
+
+        </button>
+
+        @if (
+          showDepartmentDropdown
+        ) {
+
+          <div class="dropdown-menu">
+
+            @for (
+              department of departments;
+              track department.departmentId
+            ) {
+
+              <div
+                class="dropdown-item"
+                (click)="
+                  $event.stopPropagation();
+                  selectDepartment(department)">
+
+                {{ department.departmentName }}
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+      <input
+        type="text"
+        maxlength="100"
+        [(ngModel)]="designationName"
+        (input)="clearDesignationError()"
+        placeholder="Enter designation name" />
+
+     <div
+      class="error-space">
+
+      {{ designationError }}
+
+    </div>
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="save-btn"
+          (click)="saveDesignation()">
+
+          Save
+
+        </button>
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancelForm()">
+
+          Cancel
+
+        </button>
+
+      </div>
+
+    </div>
+
+}
+
+
+  @if (isEditMode) {
+
+    <div class="master-form">
+
+      <h3>
+
+        Edit Designation
+
+      </h3>
+
+      <label>
+
+        Department
+
+      </label>
+
+      <div class="custom-dropdown">
+
+        <button
+          type="button"
+          class="dropdown-btn"
           (click)="
+            $event.stopPropagation();
             showDepartmentDropdown =
             !showDepartmentDropdown">
 
@@ -149,6 +327,7 @@
               <div
                 class="dropdown-item"
                 (click)="
+                  $event.stopPropagation();
                   selectDepartment(
                     department
                   )">
@@ -169,6 +348,7 @@
         type="text"
         maxlength="100"
         [(ngModel)]="designationName"
+        (input)="clearDesignationError()"
         placeholder="Enter designation name" />
 
       <div class="error-space">
@@ -181,9 +361,10 @@
 
         <button
           type="button"
-          class="save-btn">
+          class="save-btn"
+          (click)="updateDesignation()">
 
-          Save
+          Update
 
         </button>
 
@@ -201,15 +382,64 @@
     </div>
 
   }
+
+  @if (isDeleteMode) {
+
+  <div class="master-form">
+
+    <h3>
+
+      Delete Designation
+
+    </h3>
+
+    <label>
+
+      Designation Name
+
+    </label>
+
+    <input
+      type="text"
+      [value]="deletingDesignationName"
+      disabled />
+
+    <div class="delete-warning">
+
+      This designation will be deactivated.
+
+    </div>
+
+    <div class="error-space">
+
+      {{ deleteError }}
+
+    </div>
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="danger-btn"
+        (click)="deleteDesignation()">
+
+        Delete
+
+      </button>
+
+      <button
+        type="button"
+        class="cancel-btn"
+        (click)="cancelForm()">
+
+        Cancel
+
+      </button>
+
+    </div>
+
+  </div>
+
 }
-
- <button
-  type="button"
-  class="add-btn"
-  (click)="showAddForm()">
-
-  + Add Designation
-
-</button>
 
 </div>

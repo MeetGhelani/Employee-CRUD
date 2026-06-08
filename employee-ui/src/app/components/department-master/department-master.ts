@@ -1,7 +1,8 @@
 import {
   Component,
   OnInit
-} from '@angular/core';
+}
+from '@angular/core';
 
 import { CommonModule }
 from '@angular/common';
@@ -17,6 +18,13 @@ from '@angular/forms';
 
 import { ToastService }
 from '../../services/toast';
+
+import{ChangeDetectorRef} from '@angular/core' ;
+
+import {
+  MasterDataRefreshService
+}
+from '../../services/master-data-refresh';
 
 @Component({
   selector: 'app-department-master',
@@ -43,6 +51,8 @@ implements OnInit {
 
   departmentError = '';
 
+  departmentCount = 0;
+
   deleteError = '';
 
   isDeleteMode = false;
@@ -53,17 +63,23 @@ implements OnInit {
 
   deletingDepartmentName = '';
 
-  constructor(
-    private departmentService:
-      DepartmentService,
+constructor(
+  private departmentService:
+    DepartmentService,
 
-    private toastService:
-      ToastService
-  ) {}
+  private toastService:
+    ToastService,
+
+  private refreshService:
+    MasterDataRefreshService,
+
+  private cdr:
+    ChangeDetectorRef
+) {}
 
   ngOnInit(): void {
 
-    this.loadDepartments();
+   this.loadDepartments();
 
   }
 
@@ -77,8 +93,10 @@ implements OnInit {
 
         next: (data) => {
 
-          this.departments = [...data];
+      this.departments = [...data];
 
+      this.departmentCount =
+        this.departments.length;
           if (callback) {
 
             callback();
@@ -262,6 +280,8 @@ implements OnInit {
 
             this.cancelForm();
 
+            this.refreshService.notifyRefresh();
+
             this.toastService.show(
               response?.message ??
               '✓ Department added successfully',
@@ -278,6 +298,8 @@ implements OnInit {
 
             this.departmentError =
               error.error.message;
+
+            this.cdr.detectChanges();
 
             return;
 
@@ -322,6 +344,8 @@ implements OnInit {
 
           this.cancelForm();
 
+          this.refreshService.notifyRefresh();
+
           this.toastService.show(
             response?.message ??
             'Department updated successfully',
@@ -339,12 +363,14 @@ implements OnInit {
             this.departmentError =
               error.error.message;
 
+            this.cdr.detectChanges();
+
             return;
 
           }
 
           this.toastService.show(
-            'Unable to update department',
+            '❌ Unable to update department',
             'error'
           );
 
@@ -380,6 +406,8 @@ implements OnInit {
 
             this.cancelForm();
 
+            this.refreshService.notifyRefresh();
+
             this.toastService.show(
               response?.message ??
               'Department deleted successfully',
@@ -395,8 +423,12 @@ implements OnInit {
           this.isDeleting = false;
 
           this.deleteError =
+
             error?.error?.message ??
-            'Unable to delete department';
+            
+            '❌ Unable to delete department';
+
+          this.cdr.detectChanges();
 
         }
 

@@ -5,13 +5,16 @@ CREATE OR ALTER PROCEDURE sp_DeleteDepartment
 AS
 BEGIN
 
-    UPDATE DepartmentMaster
-    SET
-        IsActive = 0
-    WHERE
-        DepartmentId =
-            @DepartmentId;
+    SET NOCOUNT ON;
 
-    SELECT @@ROWCOUNT;
+    UPDATE DepartmentMaster
+    SET IsActive = 0
+    WHERE DepartmentId = @DepartmentId;
+
+    UPDATE DesignationMaster
+    SET IsActive = 0
+    WHERE DepartmentId = @DepartmentId;
+
+    SELECT 1;
 
 END

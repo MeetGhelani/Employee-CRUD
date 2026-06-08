@@ -1,4 +1,4 @@
-import { Component, effect , untracked} from '@angular/core';
+import { Component, effect , untracked, OnInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
@@ -23,6 +23,11 @@ from '../../services/department';
 import { DesignationService }
 from '../../services/designation';
 
+import {
+  MasterDataRefreshService
+}
+from '../../services/master-data-refresh';
+
 @Component({
   selector: 'app-employee-form',
   imports: [FormsModule,
@@ -31,7 +36,7 @@ from '../../services/designation';
   templateUrl: './employee-form.html',
   styleUrl: './employee-form.css'
 })
-export class EmployeeForm {
+export class EmployeeForm implements OnInit {
 
   name = '';
   email = '';
@@ -70,7 +75,9 @@ export class EmployeeForm {
     private departmentService: DepartmentService,
     private designationService: DesignationService,
     private cdr: ChangeDetectorRef,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private refreshService: MasterDataRefreshService
+
   ) {
 
     effect(() => {
@@ -127,9 +134,29 @@ export class EmployeeForm {
 
   });
 
-    this.loadDepartments();
-
   }
+
+    ngOnInit(): void {
+
+      this.loadDepartments();
+
+      this.refreshService
+        .refresh$
+        .subscribe(() => {
+
+          this.loadDepartments();
+
+          if (this.departmentId > 0) {
+
+            this.loadDesignations(
+              this.departmentId
+            );
+
+          }
+
+        });
+
+    }
 
   loadDepartments() {
 
@@ -139,7 +166,9 @@ export class EmployeeForm {
 
         next: (data) => {
 
-          this.departments = data;
+          this.departments = [...data];
+
+          this.cdr.detectChanges();
 
         },
 
@@ -178,7 +207,9 @@ export class EmployeeForm {
 
         next: (data) => {
 
-          this.designations = data;
+          this.designations = [...data];
+
+          this.cdr.detectChanges();
 
         },
 

@@ -162,6 +162,24 @@
 
 }
 
+.no-data {
+
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #a1a1aa;
+
+  font-size: 14px;
+
+  text-align: center;
+
+}
+
 .actions {
 
   display: flex;
@@ -182,21 +200,22 @@
 
 }
 
+
 .edit-btn {
+
+  border: none;
+
+  padding: 8px 14px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
 
   background: #41a5be;
 
   color: white;
 
-  border: none;
-
-  border-radius: 8px;
-
-  padding: 6px 12px;
-
-  font-size: 13px;
-
-  cursor: pointer;
+  font-weight: 600;
 
   transition: 0.2s;
 
@@ -204,25 +223,26 @@
 
 .edit-btn:hover {
 
-  background: #418ea1;
+  transform: translateY(-1px);
+background: #418ea1;
 
 }
 
 .delete-btn {
 
-  background: transparent;
+  border: none;
 
-  color: #ff7272;
-
-  border: 1px solid #ff7272;
+  padding: 8px 14px;
 
   border-radius: 8px;
 
-  padding: 6px 12px;
-
-  font-size: 13px;
-
   cursor: pointer;
+
+  background: #d5545f;
+
+  color: white;
+
+  font-weight: 600;
 
   transition: 0.2s;
 
@@ -230,9 +250,7 @@
 
 .delete-btn:hover {
 
-  background: rgba(255,114,114,.15);
-
-  border-color: #ff7272;
+  transform: translateY(-1px);
 
 }
 

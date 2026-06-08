@@ -6,7 +6,7 @@
 
     <span class="count-badge">
 
-      {{ departments.length }}
+      {{ departmentCount }}
 
     </span>
 
@@ -20,14 +20,18 @@
 
     <div class="search-container">
 
-      <input
-        type="text"
-        [(ngModel)]="searchText"
-        placeholder="🔍 Search department..." />
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          placeholder="🔍 Search department..." />
 
-  </div>
+    </div>
 
     <div class="department-list">
+
+    @if (
+      filteredDepartments.length > 0
+    ) {
 
       @for (
         department of filteredDepartments;
@@ -56,17 +60,17 @@
 
             </button>
 
-         <button
-          type="button"
-          class="delete-btn"
-          (click)="
-            showDeleteConfirmation(
-              department
-            )">
+            <button
+              type="button"
+              class="delete-btn"
+              (click)="
+                showDeleteConfirmation(
+                  department
+                )">
 
-          Delete
+              Delete
 
-        </button>
+            </button>
 
           </div>
 
@@ -74,9 +78,17 @@
 
       }
 
-    
+    } @else {
 
-    </div>
+      <div class="no-data">
+
+        No departments found.
+
+      </div>
+
+    }
+
+  </div>
 
     <button
       type="button"
@@ -216,7 +228,7 @@
 
       <div class="error-space">
 
-        {{ departmentError }}
+        {{ deleteError }}
 
       </div>
 

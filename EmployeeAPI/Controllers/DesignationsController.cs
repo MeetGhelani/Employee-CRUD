@@ -99,17 +99,17 @@ public class DesignationsController
         int id,
         UpdateDesignationDto dto)
     {
-
         dto.DesignationName =
-        dto.DesignationName.Trim();
+            dto.DesignationName.Trim();
 
-        var status =
+        var activeDuplicateExists =
             await _service
-                .GetDesignationStatusAsync(
+                .DesignationExistsForOtherDesignationAsync(
+                    id,
                     dto.DepartmentId,
                     dto.DesignationName);
 
-        if (status == 1)
+        if (activeDuplicateExists)
         {
             return Conflict(
                 new
@@ -119,18 +119,19 @@ public class DesignationsController
                 });
         }
 
-        if (status == 2)
-        {
+        var status =
             await _service
-                .ReactivateDesignationAsync(
+                .GetDesignationStatusAsync(
                     dto.DepartmentId,
                     dto.DesignationName);
 
-            return Ok(
+        if (status == 2)
+        {
+            return Conflict(
                 new
                 {
                     message =
-                        "Designation reactivated successfully."
+                        "Designation already exists in inactive state."
                 });
         }
 

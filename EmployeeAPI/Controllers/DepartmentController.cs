@@ -32,7 +32,6 @@ public class DepartmentsController
     [HttpPost]
     public async Task<IActionResult>
 
-    
     CreateDepartment(
         CreateDepartmentDto dto)
     {
@@ -89,16 +88,16 @@ public class DepartmentsController
         int id,
         UpdateDepartmentDto dto)
     {
-
         dto.DepartmentName =
-        dto.DepartmentName.Trim();
-        
-        var status =
+            dto.DepartmentName.Trim();
+
+        var activeDuplicateExists =
             await _service
-                .GetDepartmentStatusAsync(
+                .DepartmentExistsForOtherDepartmentAsync(
+                    id,
                     dto.DepartmentName);
 
-        if (status == 1)
+        if (activeDuplicateExists)
         {
             return Conflict(
                 new
@@ -108,17 +107,18 @@ public class DepartmentsController
                 });
         }
 
-        if (status == 2)
-        {
+        var status =
             await _service
-                .ReactivateDepartmentAsync(
+                .GetDepartmentStatusAsync(
                     dto.DepartmentName);
 
-            return Ok(
+        if (status == 2)
+        {
+            return Conflict(
                 new
                 {
                     message =
-                        "Department reactivated successfully."
+                        "Department already exists in inactive state."
                 });
         }
 

@@ -15,7 +15,7 @@ public class DesignationService
     }
 
     public async Task<List<Designation>>
-        GetDesignationsAsync()
+    GetDesignationsAsync()
     {
         return await
             _repository
@@ -23,7 +23,7 @@ public class DesignationService
     }
 
     public async Task<List<Designation>>
-        GetDesignationsByDepartmentAsync(
+    GetDesignationsByDepartmentAsync(
             int departmentId)
     {
         return await
@@ -129,5 +129,14 @@ public class DesignationService
             .ReactivateDesignationAsync(
                 departmentId,
                 designationName);
+    }
+
+    public async Task<bool>
+    IsDepartmentActiveAsync(
+        int departmentId)
+    {
+        return await _repository
+            .IsDepartmentActiveAsync(
+                departmentId);
     }
 }

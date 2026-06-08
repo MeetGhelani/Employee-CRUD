@@ -19,7 +19,7 @@ public class DepartmentRepository
     }
 
     public async Task<List<Department>>
-        GetDepartmentsAsync()
+    GetDepartmentsAsync()
     {
         var departments =
             new List<Department>();
@@ -301,5 +301,34 @@ public class DepartmentRepository
                 await command.ExecuteScalarAsync());
 
         return rowsAffected > 0;
+    }
+
+    public async Task<bool>
+    IsDepartmentActiveAsync(
+        int departmentId)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_IsDepartmentActive",
+                connection);
+
+        command.CommandType =
+            CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            departmentId);
+
+        var count =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return count > 0;
     }
 }

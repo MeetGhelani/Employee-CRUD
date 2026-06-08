@@ -30,6 +30,11 @@ import {
   SortChangedEvent
 } from 'ag-grid-community';
 
+import {
+  MasterDataRefreshService
+}
+from '../../services/master-data-refresh';
+
 
 import { Employee } from '../../models/employee';
 import { EmployeeService } from '../../services/employee';
@@ -216,7 +221,9 @@ export class EmployeeGrid implements OnInit {
 
     private ngZone: NgZone,
 
-    private toastService: ToastService
+    private toastService: ToastService,
+
+    private refreshService: MasterDataRefreshService
 
   ) {}
 
@@ -242,6 +249,14 @@ export class EmployeeGrid implements OnInit {
 
     this.employeeService
       .employeeUpdated$
+      .subscribe(() => {
+
+        this.loadEmployees();
+
+      });
+
+    this.refreshService
+      .refresh$
       .subscribe(() => {
 
         this.loadEmployees();
@@ -357,6 +372,7 @@ export class EmployeeGrid implements OnInit {
     );
 
   }
+
   loadEmployees() {
 
     this.employeeService

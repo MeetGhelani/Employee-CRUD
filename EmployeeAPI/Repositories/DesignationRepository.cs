@@ -19,7 +19,7 @@ public class DesignationRepository
     }
 
     public async Task<List<Designation>>
-        GetDesignationsAsync()
+    GetDesignationsAsync()
     {
         var designations =
             new List<Designation>();
@@ -64,7 +64,7 @@ public class DesignationRepository
     }
 
     public async Task<List<Designation>>
-        GetDesignationsByDepartmentAsync(
+    GetDesignationsByDepartmentAsync(
             int departmentId)
     {
         var designations =
@@ -422,5 +422,32 @@ public class DesignationRepository
         return rowsAffected > 0;
     }
 
-    
+    public async Task<bool>
+    IsDepartmentActiveAsync(
+        int departmentId)
+    {
+        using var connection =
+            new SqlConnection(
+                _connectionString);
+
+        await connection.OpenAsync();
+
+        using var command =
+            new SqlCommand(
+                "sp_IsDepartmentActive",
+                connection);
+
+        command.CommandType =
+            CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue(
+            "@DepartmentId",
+            departmentId);
+
+        var count =
+            Convert.ToInt32(
+                await command.ExecuteScalarAsync());
+
+        return count > 0;
+    }
 }
